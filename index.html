@@ -491,16 +491,27 @@ const GOODS=[
  {id:'mag',n:'雑誌',price:680,cost:480,lv:8,c:'#c23b6a'},
  {id:'shampoo',n:'カーシャンプー',price:880,cost:620,lv:8,c:'#3a9a8a'},
  {id:'pudding',n:'プリン',price:210,cost:145,lv:9,c:'#f0cf6a'},
- {id:'unaju',n:'うな重',price:1680,cost:1200,lv:10,c:'#7a2a1a'}
+ {id:'unaju',n:'うな重',price:1680,cost:1200,lv:10,c:'#7a2a1a'},
+ {id:'water',n:'天然水',price:120,cost:82,lv:1,c:'#9fd6f0',dr:1},
+ {id:'gum',n:'ガム',price:130,cost:88,lv:2,c:'#5aa66a'},
+ {id:'salad',n:'サラダ',price:360,cost:250,lv:3,c:'#6fa04a'},
+ {id:'hotdog',n:'ホットドッグ',price:280,cost:195,lv:4,c:'#d9a85a'},
+ {id:'sports',n:'スポーツドリンク',price:170,cost:118,lv:5,c:'#dfe8f0',dr:1},
+ {id:'fresh',n:'車の芳香剤',price:580,cost:400,lv:5,c:'#9a6fc0'},
+ {id:'yakisoba',n:'カップ焼きそば',price:240,cost:166,lv:6,c:'#f4f2ea'},
+ {id:'gummy',n:'グミ',price:180,cost:124,lv:7,c:'#c23b6a'},
+ {id:'jerky',n:'ビーフジャーキー',price:480,cost:335,lv:8,c:'#7a3a22'},
+ {id:'choux',n:'シュークリーム',price:200,cost:138,lv:9,c:'#e8c77a'},
+ {id:'melon',n:'高級メロン',price:2980,cost:2150,lv:10,c:'#9fc46a'}
 ];
 const GMAP={};GOODS.forEach(g=>GMAP[g.id]=g);
 // 大きさ：1=小（1段8個）2=中（1段6個）3=大（ガソリン専用棚のみ・1段4個）。箱の入数は8個、大きい物は4個
-const BIG={canR:1,canH:1,canD:1,oil:1,washer:1,shampoo:1},MID={ramen:1,bento:1,karaage:1,unaju:1,chips:1,mag:1};GOODS.forEach(g=>{g.sz=BIG[g.id]?3:MID[g.id]?2:1;g.cs=g.sz===3?4:8;g.cap=g.sz===3?4:g.sz===2?6:8});
+const BIG={canR:1,canH:1,canD:1,oil:1,washer:1,shampoo:1},MID={ramen:1,bento:1,karaage:1,unaju:1,chips:1,mag:1,yakisoba:1,melon:1,salad:1};GOODS.forEach(g=>{g.sz=BIG[g.id]?3:MID[g.id]?2:1;g.cs=g.sz===3?4:8;g.cap=g.sz===3?4:g.sz===2?6:8});
 function csOf(id){return GMAP[id]?GMAP[id].cs:8}function capOf(id){return GMAP[id]?GMAP[id].cap:8}
 // 棚のダンボール（_sh=陳列棚 / _gs=ガソリン専用棚）
-const isShBox=id=>id==='_sh'||id==='_gs'||id==='_rk'||id==='_rg',isToolBox=id=>typeof id==='string'&&id.slice(0,2)==='t_'&&!!TOOLS[id.slice(2)],isSp=id=>isShBox(id)||isToolBox(id);
+const isShBox=id=>id==='_sh'||id==='_gs'||id==='_rk'||id==='_rg'||id==='_ds',isToolBox=id=>typeof id==='string'&&id.slice(0,2)==='t_'&&!!TOOLS[id.slice(2)],isSp=id=>isShBox(id)||isToolBox(id);
 const XP_NEED=[0,300,900,2000,3800,6500,10500,16000,24000,35000];
-const UNLOCK={2:'缶コーヒー・カップ麺・携行缶レギュラー・給油レーン2本目',3:'ハイオク・アルバイト（新人）・のり弁当・アイス・携行缶ハイオク',4:'軽油・見習いアルバイト・たまごサンド・コーラ・携行缶軽油・給油レーン3本目',5:'一人前アルバイト・エンジンオイル・ウォッシャー液',6:'エナジードリンク・ポテトチップス・給油レーン4本目',7:'ベテランアルバイト・チョコレート・からあげ弁当',8:'雑誌・カーシャンプー・給油レーン5本目',9:'達人アルバイト・プリン',10:'うな重・給油レーン6本目・アルバイト8人'};
+const UNLOCK={2:'缶コーヒー・カップ麺・ガム・携行缶レギュラー・給油レーン2本目',3:'ハイオク・アルバイト（新人）・のり弁当・アイス・サラダ・携行缶ハイオク',4:'軽油・見習いアルバイト・たまごサンド・コーラ・ホットドッグ・携行缶軽油・給油レーン3本目・売り場の拡張',5:'一人前アルバイト・スポーツドリンク・芳香剤・エンジンオイル・ウォッシャー液・在庫スペースの拡張',6:'エナジードリンク・ポテトチップス・カップ焼きそば・給油レーン4本目',7:'ベテランアルバイト・チョコレート・グミ・からあげ弁当・売り場の拡張（2回目）',8:'雑誌・ビーフジャーキー・カーシャンプー・給油レーン5本目・在庫スペースの拡張（2回目）',9:'達人アルバイト・プリン・シュークリーム',10:'うな重・高級メロン・給油レーン6本目・アルバイト8人'};
 const ROWS=5,NSH=40,GAS0=30,NROW=NSH*ROWS,MAXCREW=8,SH_HX=1.25,SH_HZ=0.42,REG_HX=1.75,REG_HZ=0.42;
 // アルバイト：Lv.3 から雇える。上のランクほど作業が速い。日給は固定
 const TIERS=[{n:'新人',lv:3,s:0.45,w:5000},{n:'見習い',lv:4,s:0.65,w:6500},{n:'一人前',lv:5,s:0.85,w:8000},{n:'ベテラン',lv:7,s:1.1,w:10000},{n:'達人',lv:9,s:1.4,w:13000}];
@@ -511,7 +522,10 @@ function crewMax(){return G.level<3?0:Math.min(MAXCREW,G.level-2)}
 // 店は幅14m×奥行10m（以前の半分）。奥に在庫スペース
 const HW=7,ZF=-4,ZB=-14,ZR=-19.7,AX=-3.7;
 const BATPOS=[2.4,-4.7],FAUCET=[-7.7,-6.2],PCPOS=[5.6,-13.2],VPOS=[4.6,-3.45],VF=[4.6,-2.4];
-const ROB_OUT=[[[0,-5.2],[0,-2.6],[-1.5,-2.2],[-12,-1.8],[-36,-1.6]],[[0,-5.2],[0,-2.6],[3,-2.2],[9.5,-2.9],[10.8,-9],[10.8,-22],[36,-25]]];
+const ROB_OUT=[[[0,-5.2],[0,-2.6],[-1.5,-2.2],[-12,-1.8],[-36,-1.6]],[[0,-5.2],[0,-2.6],[3,-2.4],[12,-2.9],[40,-3.2]]];
+// 拡張：売り場は右へ2mずつ、在庫スペースは奥へ2.5mずつ（各2回まで・店のレベルで解放）
+const EXP_S=[{lv:4,p:80000},{lv:7,p:200000}],EXP_B=[{lv:5,p:60000},{lv:8,p:150000}];
+function XR(){return HW+(G?2*(G.ex|0):0)}function ZRv(){return ZR-(G?2.5*(G.eb|0):0)}
 const UTIL0=1500,OPEN_T=480,CLOSE_T=1200,MAXBOX=30,TRUCK_CAP=10,RACK_CAP=4,MAXRACK=4;
 // 在庫棚：[x, z, 正面の向き（-1=-z側 / 1=+z側）]
 const RACKS=[[-0.9,-14.75,0],[1.9,-14.75,0],[4.7,-14.75,0],[4.7,-18.95,0]],TRUCK_STOP=[0.5,-23.6],BIN=[-5.9,-15.0],
@@ -534,17 +548,18 @@ function defaultSave(){const sl=new Array(NSH).fill(0);sl[0]=1;sl[GAS0]=1;return
 function newDay(){return {fuel:0,goods:0,vend:0,wipe:0,buy:0,ship:0,visit:0,served:0,unhappy:0,left:0,stolen:0,stolenN:0}}
 const GI={};GOODS.forEach((g,i)=>{GI[g.id]=i});const gi=id=>GI[id]===undefined?-1:GI[id];
 function regPt(lx,lz,w,i){const R=(w||G).regs,r=R[i|0]||R[0],c=[1,0,-1,0][r[2]],sn=[0,1,0,-1][r[2]];return [r[0]+lx*c-lz*sn,r[1]+lx*sn+lz*c]}
-function shFront(i,d){const q=G.sh[i];return q[2]?[q[0]+d,q[1]]:[q[0],q[1]+d]}
+const DIR4=[[0,1],[1,0],[0,-1],[-1,0]];
+function shFront(i,d){const q=G.sh[i],n=DIR4[q[2]&3];return [q[0]+n[0]*d,q[1]+n[1]*d]}
 function crewHome(c,i,w){return c.job==='reg'&&(c.ri|0)>=0?regPt(0.2,-0.95,w,c.ri|0):c.job==='pump'?[4.5+i*0.7,-1.0]:c.job==='guard'?[1.6+i*0.6,-5.0]:c.job==='stock'?[-2+i*0.8,-17.4]:c.job==='clean'?[-5.6+i*0.6,-5.0]:[6-i*0.6,-16.8]}
 function newCrew(w,tier,job,i,sd){const c={id:w.nid++,tier:tier,job:job,sd:(sd|0)||Math.floor(rnd()*1e6)+1,x:0,z:0,t:0,task:0,box:0,path:[],gx:null,gz:null,al:0},h=crewHome(c,i,w);c.x=h[0];c.z=h[1];return c}
 function restock(w){w=w||G;const st={};w.rows.forEach(r=>{if(r.n>0&&r.tag===r.g)st[r.g]=(st[r.g]||0)+r.n});w.stock=st}
 function newWorld(s){const ver=s.v|0,old=ver<4,osl=Array.isArray(s.slots)?s.slots:[],map=i=>old?(i<6?i:i<8?GAS0+i-6:-1):ver<5?(i<12?i:i<16?GAS0+i-12:-1):i;
   const w={money:s.money,xp:s.xp,level:Math.max(1,Math.min(MAXLV,s.level|0)),tanks:{r:s.tanks.r,h:s.tanks.h,d:s.tanks.d},stock:{},rows:[],slots:new Array(NSH).fill(0),served:s.served||0,shop:String(s.shop||'まんたんマート').slice(0,12),sales:+s.sales||0,
-  day:s.day||1,clock:OPEN_T,phase:'pre',price:Object.assign({},s.price||{}),crew:[],drops:[],boxes:[],rk:[],pend:[],truck:{st:0,x:-70,z:22,rot:0,path:[],t:0},d:newDay(),report:null,regT:[],regBy:[],bills:[],
+  day:s.day||1,clock:OPEN_T,phase:'pre',price:Object.assign({},s.price||{}),crew:[],drops:[],boxes:[],rk:[],pend:[],truck:{st:0,x:-70,z:22,rot:0,path:[],t:0},d:newDay(),report:null,regT:[],regBy:[],bills:[],ex:Math.max(0,Math.min(2,s.ex|0)),eb:Math.max(0,Math.min(2,s.eb|0)),
   cars:[],custs:[],regQ:[],lanes:[[],[],[],[],[],[]],lanesN:Math.max(1,Math.min(MAXLANE,(s.lanes|0)||1)),park:[0,0,0,0,0,0],parkN:Math.max(1,Math.min(6,(s.park|0)||2)),nid:1,tCar:10,tCu:12,bill:null,note:[0,''],tools:[],mess:[],vend:[]};
   osl.forEach((v,i)=>{const k=map(i);if(v&&k>=0&&k<NSH)w.slots[k]=1});
   w.sh=[];for(let i=0;i<NSH;i++){const d=i<6?SLOTS[i]:i===GAS0?GSLOT:[0,-9];w.sh.push([d[0],d[1],0])}
-  if(!old&&Array.isArray(s.sh))s.sh.forEach((q,j)=>{const k=map(j);if(k>=0&&k<NSH&&q&&isFinite(q[0])&&isFinite(q[1]))w.sh[k]=[+q[0],+q[1],q[2]?1:0]});
+  if(!old&&Array.isArray(s.sh))s.sh.forEach((q,j)=>{const k=map(j);if(k>=0&&k<NSH&&q&&isFinite(q[0])&&isFinite(q[1]))w.sh[k]=[+q[0],+q[1],(q[2]|0)&3]});
   w.regs=[];(ver>=5&&Array.isArray(s.regs)?s.regs:!old&&Array.isArray(s.reg)?[s.reg]:[]).slice(0,8).forEach(q=>{if(q&&isFinite(q[0])&&isFinite(q[1]))w.regs.push([+q[0],+q[1],((q[2]|0)%4+4)%4])});if(!w.regs.length)w.regs.push([3.6,-7.2,0]);
   (ver>=5&&Array.isArray(s.rk)?s.rk:RACKS.slice(0,Math.max(1,Math.min(4,(s.racks|0)||1)))).slice(0,40).forEach(q=>{if(q&&isFinite(q[0])&&isFinite(q[1]))w.rk.push([+q[0],+q[1],q[2]?1:0])});if(!w.rk.length)w.rk.push(RACKS[0].slice());
   for(let i=0;i<NROW;i++)w.rows.push({g:'',n:0,tag:''});
@@ -560,7 +575,7 @@ function newWorld(s){const ver=s.v|0,old=ver<4,osl=Array.isArray(s.slots)?s.slot
     w.boxes.push(o)});
   for(let k=0;k<(old?(s.spare|0):0)&&w.boxes.length<MAXBOX;k++)w.boxes.push({id:w.nid++,gid:'_sh',n:1,x:-8.5+(w.boxes.length%6),z:w.boxes.length<6?-2.9:-1.9,held:0,open:0,loc:0,sl:0});
   (s.pend||[]).forEach(id=>{if((GMAP[id]||isSp(id))&&w.boxes.length+w.pend.length<MAXBOX)w.pend.push(id)});
-  if(w.boxes.some(b=>b.loc==='t')){w.truck.st=2;w.truck.x=TRUCK_STOP[0];w.truck.z=TRUCK_STOP[1];truckPlace(w)}
+  if(w.boxes.some(b=>b.loc==='t')){w.truck.st=2;w.truck.x=TRUCK_STOP[0];w.truck.z=TRUCK_STOP[1]-2.5*w.eb;truckPlace(w)}
   (Array.isArray(s.tools)&&s.tools.length?s.tools:defTools()).slice(0,40).forEach(t=>{if(t&&TOOLS[t[0]])w.tools.push({id:w.nid++,k:t[0],x:+t[1]||0,z:+t[2]||0,held:0,w:t[0]==='bucket'?Math.max(-1,Math.min(3,t[3]|0)):0,wet:Math.max(0,Math.min(1,+t[4]||0)),ft:0})});
   for(let i=0;i<VN;i++){const v=Array.isArray(s.vend)&&s.vend[i],g=v&&GOODS[v[0]];w.vend.push(g&&g.dr&&v[1]>0?{g:g.id,n:Math.min(VCAP,v[1]|0)}:{g:'',n:0})}
   // 置けない場所にある棚（以前のセーブなど）は空いている場所へ移す
@@ -592,28 +607,28 @@ function lootRow(d){return putBack(d.gid,d.row)}
 function lootPut(d,ri){const r=G.rows[ri];r.g=d.gid;r.n++;restock();G.drops.splice(G.drops.indexOf(d),1)}
 // 店内の通り道：表(F)－入口－売り場(S)－裏口－在庫スペース(B)－搬入口－外(O)
 const ZI={F:0,S:1,B:2,O:3};
-function zoneOf(x,z){return z<ZR?'O':Math.abs(x)<HW&&z<ZB?'B':Math.abs(x)<HW&&z<ZF?'S':'F'}
-function route(o,tx,tz){let a=ZI[zoneOf(o.x,o.z)],cz=o.z;const b=ZI[zoneOf(tx,tz)],p=[],front=z=>z>-5.9;
+function zoneOf(x,z){const xr=XR();return z<ZRv()?'O':x>-HW&&x<xr&&z<ZB?'B':x>-HW&&x<xr&&z<ZF?'S':'F'}
+function route(o,tx,tz){const zr=ZRv();let a=ZI[zoneOf(o.x,o.z)],cz=o.z;const b=ZI[zoneOf(tx,tz)],p=[],front=z=>z>-5.9;
   if(a===b){if(a===1&&!(front(cz)&&front(tz))){p.push([AX,cz]);p.push([AX,tz])}else if(a===2)p.push([tx,-16.6])}
   let guard=0;while(a!==b&&guard++<6){const up=b>a;
     if(a===0){p.push([0,-2.6],[0,-5.2]);cz=-5.2;a=1;if(b===1&&!front(tz))p.push([AX,-5.3],[AX,tz])}
     else if(a===1&&!up){if(!front(cz))p.push([AX,cz],[AX,-5.3]);p.push([0,-5.2],[0,-2.6]);a=0}
     else if(a===1){p.push([AX,cz],[AX,-13.2],[AX,-15.2]);a=2;if(b===2)p.push([tx,-16.6])}
     else if(a===2&&!up){p.push([AX,-15.2],[AX,-13.2]);cz=-13.2;a=1;if(b===1)p.push([AX,tz])}
-    else if(a===2){p.push([0.5,-18.6],[0.5,-20.6]);a=3}
-    else{p.push([0.5,-20.6],[0.5,-18.6]);a=2;if(b===2)p.push([tx,-16.6])}}
+    else if(a===2){p.push([0.5,zr+1.1],[0.5,zr-0.9]);a=3}
+    else{p.push([0.5,zr-0.9],[0.5,zr+1.1]);a=2;if(b===2)p.push([tx,-16.6])}}
   p.push([tx,tz]);return p}
 function crewGo(c,tx,tz,sp,dt){if(Math.hypot(c.x-tx,c.z-tz)<0.12){c.path=[];c.gx=null;return true}
   if(c.gx!==tx||c.gz!==tz||!c.path.length){c.gx=tx;c.gz=tz;c.path=route(c,tx,tz)}
   follow(c,sp,dt);return Math.hypot(c.x-tx,c.z-tz)<0.12}
 function crewDrop(c){if(c.box){const b=G.boxes.find(b=>b.id===c.box);if(b&&b.held==='@'+c.id){b.held=0;b.loc=0;b.x=c.x;b.z=c.z}}c.box=0;c.task=0;c.t=0;c.al=0;c.path=[];c.gx=null}
 function shCount(gas){let n=0;for(let i=gas?GAS0:0;i<(gas?NSH:GAS0);i++)if(G.slots[i])n++;const id=gas?'_gs':'_sh';return n+G.boxes.filter(b=>b.gid===id).length+G.pend.filter(p=>p===id).length}
-function rectOf(t,x,z,r){const hx=t==='reg'?REG_HX:SH_HX,hz=t==='reg'?REG_HZ:t==='rk'?0.4:SH_HZ;return r%2?[x-hz,x+hz,z-hx,z+hx]:[x-hx,x+hx,z-hz,z+hz]}
+function rectOf(t,x,z,r){const hx=t==='reg'?REG_HX:SH_HX,hz=t==='reg'?REG_HZ:t==='rk'?0.4:t==='ds'?0.84:SH_HZ;return r%2?[x-hz,x+hz,z-hx,z+hx]:[x-hx,x+hx,z-hz,z+hz]}
 // 動かせない物：事務机、バット立て、入口の前、裏口の前
 const FIXED=[[4.4,6.8,-13.9,-12.5],[2.1,2.7,-5.0,-4.4],[-1.6,1.6,-6.1,-4],[-4.7,-2.7,-14,-12.5]],FIXB=[[AX-1,AX+1,-15.7,-14],[-0.8,1.8,-19.7,-18.2],[BIN[0]-0.55,BIN[0]+0.55,BIN[1]-0.55,BIN[1]+0.55]];
 // 入口から、裏口・管理PC・レジの内側と外側まで歩いて行けるか（棚で通り道をふさがせない）
-const NGX=54,NGZ=38;
-function reachOk(t,i,x,z,r){const rects=[FIXED[0],FIXED[1]],regs=G.regs.map((q,k)=>t==='reg'&&k===i?[x,z,r]:q);if(t==='reg'&&i>=G.regs.length)regs.push([x,z,r]);regs.forEach(q=>rects.push(rectOf('reg',q[0],q[1],q[2])));if(t!=='reg')rects.push(rectOf(t,x,z,r));
+const NGX=70,NGZ=38;
+function reachOk(t,i,x,z,r){const rects=[FIXED[0],FIXED[1],[XR()-0.3,12,-14,-4]],regs=G.regs.map((q,k)=>t==='reg'&&k===i?[x,z,r]:q);if(t==='reg'&&i>=G.regs.length)regs.push([x,z,r]);regs.forEach(q=>rects.push(rectOf('reg',q[0],q[1],q[2])));if(t!=='reg')rects.push(rectOf(t,x,z,r));
   G.rk.forEach((q,k)=>{if(!(t==='rk'&&k===i)&&q[1]>-13.6)rects.push(rectOf('rk',q[0],q[1],q[2]))});
   for(let k=0;k<NSH;k++){if(!G.slots[k]||(t==='sh'&&k===i))continue;const q=G.sh[k];rects.push(rectOf('sh',q[0],q[1],q[2]))}
   const blk=new Uint8Array(NGX*NGZ),m=0.3,ci=v=>Math.max(0,Math.min(NGX-1,Math.floor((v+6.75)/0.25))),cj=v=>Math.max(0,Math.min(NGZ-1,Math.floor((v+13.75)/0.25)));
@@ -622,15 +637,15 @@ function reachOk(t,i,x,z,r){const rects=[FIXED[0],FIXED[1]],regs=G.regs.map((q,k
   for(let h=0;h<q.length;h++){const p=q[h],c=p%NGX,j=(p-c)/NGX;if(c>0&&!seen[p-1]&&!blk[p-1]){seen[p-1]=1;q.push(p-1)}if(c<NGX-1&&!seen[p+1]&&!blk[p+1]){seen[p+1]=1;q.push(p+1)}if(j>0&&!seen[p-NGX]&&!blk[p-NGX]){seen[p-NGX]=1;q.push(p-NGX)}if(j<NGZ-1&&!seen[p+NGX]&&!blk[p+NGX]){seen[p+NGX]=1;q.push(p+NGX)}}
   const W={regs:regs},tg=[[AX,-13.3],[PCPOS[0],PCPOS[1]+1.0]];regs.forEach((q,k)=>{tg.push(regPt(0.2,-0.95,W,k),regPt(0.4,0.95,W,k))});
   return tg.every(p=>{const c=ci(p[0]),j=cj(p[1]);for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const cc=c+a,jj=j+b;if(cc>=0&&cc<NGX&&jj>=0&&jj<NGZ&&seen[jj*NGX+cc])return true}return false})}
-function placeOk(t,i,x,z,r){const a=rectOf(t,x,z,r),inS=!(a[0]<-6.8||a[1]>6.8||a[2]<-13.75||a[3]>-4.35),inB=t==='rk'&&!(a[0]<-6.8||a[1]>6.8||a[2]<-19.45||a[3]>-14.2);if(!inS&&!inB)return false;
+function placeOk(t,i,x,z,r){const xr=XR(),zr=ZRv(),a=rectOf(t,x,z,r),inS=!(a[0]<-6.8||a[1]>xr-0.2||a[2]<-13.75||a[3]>-4.35),inB=t==='rk'&&!(a[0]<-6.8||a[1]>xr-0.2||a[2]<zr+0.25||a[3]>-14.2);if(!inS&&!inB)return false;
   const hit=(b,m)=>a[0]<b[1]+m&&a[1]>b[0]-m&&a[2]<b[3]+m&&a[3]>b[2]-m;
-  for(const f of (inS?FIXED:FIXB))if(hit(f,0))return false;
-  for(let k=0;k<NSH;k++){if(!G.slots[k]||(t==='sh'&&k===i))continue;const q=G.sh[k];if(hit(rectOf('sh',q[0],q[1],q[2]),0.45))return false}
+  for(const f of (inS?FIXED:[FIXB[0],[-0.8,1.8,zr,zr+1.5],FIXB[2]]))if(hit(f,0))return false;
+  for(let k=0;k<NSH;k++){if(!G.slots[k]||(t==='sh'&&k===i))continue;const q=G.sh[k],n=DIR4[q[2]&3],b2b=t==='sh'&&((r^q[2])&3)===2&&Math.abs((x-q[0])*n[0]+(z-q[1])*n[1]+0.84)<0.03&&Math.abs((x-q[0])*n[1]-(z-q[1])*n[0])<0.03;if(hit(rectOf('sh',q[0],q[1],q[2]),b2b?-0.03:0.45))return false}
   for(let k=0;k<G.regs.length;k++){if(t==='reg'&&k===i)continue;const q=G.regs[k];if(hit(rectOf('reg',q[0],q[1],q[2]),0.6))return false}
   for(let k=0;k<G.rk.length;k++){if(t==='rk'&&k===i)continue;const q=G.rk[k];if(hit(rectOf('rk',q[0],q[1],q[2]),t==='rk'?0.04:0.45))return false}
-  if(t==='reg'){const c=[1,0,-1,0][r],sn=[0,1,0,-1][r],pt=(lx,lz)=>[x+lx*c-lz*sn,z+lx*sn+lz*c],inb=q=>Math.abs(q[0])<6.6&&q[1]>-13.6&&q[1]<-4.5;if(!inb(pt(0.2,-1.0))||!inb(pt(0.4,1.0))||!inb(pt(-1.2,1.0)))return false}
+  if(t==='reg'){const c=[1,0,-1,0][r],sn=[0,1,0,-1][r],pt=(lx,lz)=>[x+lx*c-lz*sn,z+lx*sn+lz*c],inb=q=>q[0]>-6.6&&q[0]<xr-0.4&&q[1]>-13.6&&q[1]<-4.5;if(!inb(pt(0.2,-1.0))||!inb(pt(0.4,1.0))||!inb(pt(-1.2,1.0)))return false}
   return inS?reachOk(t,i,x,z,r):true}
-function freeSpot(i){const q=G.sh[i];if(placeOk('sh',i,q[0],q[1],q[2]))return q;for(let z=-6.5;z>=-13;z-=0.5)for(let x=-5.5;x<=5.5;x+=0.5)if(placeOk('sh',i,x,z,0))return [x,z,0];return null}
+function freeSpot(i){const q=G.sh[i];if(placeOk('sh',i,q[0],q[1],q[2]))return q;for(let z=-6.5;z>=-13;z-=0.5)for(let x=-5.5;x<=XR()-1.5;x+=0.5)if(placeOk('sh',i,x,z,0))return [x,z,0];return null}
 function shelfPrice(gas){return gas?12000+6000*shCount(1):5000+3000*shCount(0)}
 function itemCost(id){return isToolBox(id)?TOOLS[id.slice(2)].p:isShBox(id)?furnPrice(id):GMAP[id]?GMAP[id].cost*GMAP[id].cs:0}
 function basePrice(k){return FUELS[k]?FUELS[k].price:GMAP[k]?GMAP[k].price:k&&k.slice(0,2)==='v_'&&GMAP[k.slice(2)]?GMAP[k.slice(2)].price:0}
@@ -645,20 +660,20 @@ function boxSpot(){for(let i=0;i<MAXBOX;i++){const x=-8.5+(i%6),z=-2.9+Math.floo
 function freeBoxes(valid){G.boxes.forEach(b=>{if(b.held&&String(b.held)[0]!=='@'&&valid.indexOf(b.held)<0){const s=boxSpot();b.held=0;b.loc=0;b.x=s[0];b.z=s[1]}});
   G.tools.forEach(t=>{if(t.held&&valid.indexOf(t.held)<0)t.held=0});G.regBy.forEach((w,k)=>{if(w&&valid.indexOf(w)<0)G.regBy[k]=0})}
 function rackPos(sl,wide,w){const r=Math.floor(sl/RACK_CAP),i=sl%RACK_CAP,R=(w||G).rk[r]||RACKS[0],d=wide?0:i%2?0.6:-0.6;return R[2]?[R[0],R[1]+d]:[R[0]+d,R[1]]}
-function inRoom(p){return Math.abs(p[0])<6.6&&((p[1]<-4.4&&p[1]>-13.6)||(p[1]<-14.4&&p[1]>-19.3))}
+function inRoom(p){return p[0]>-6.6&&p[0]<XR()-0.4&&((p[1]<-4.4&&p[1]>-13.6)||(p[1]<-14.4&&p[1]>ZRv()+0.4))}
 function rackFront(r){const R=G.rk[r]||RACKS[0],c=R[2]?[[R[0]+1.15,R[1]],[R[0]-1.15,R[1]]]:[[R[0],R[1]-1.15],[R[0],R[1]+1.15]];return c.find(inRoom)||c[0]}
 // 棚・在庫棚・レジ（どれもダンボールで届く）の台数と値段
-function furnCount(id){const n=G.boxes.filter(b=>b.gid===id).length+G.pend.filter(p=>p===id).length;return id==='_rk'?G.rk.length+n:id==='_rg'?G.regs.length+n:shCount(id==='_gs'?1:0)}
-function furnPrice(id,extra){const n=furnCount(id)+(extra|0);return id==='_sh'?5000+3000*n:id==='_gs'?12000+6000*n:id==='_rk'?8000*n:40000*n}
+function furnCount(id){const n=G.boxes.filter(b=>b.gid===id).length+G.pend.filter(p=>p===id).length;return id==='_rk'?G.rk.length+n:id==='_rg'?G.regs.length+n:id==='_ds'?shCount(0)+2*n:shCount(id==='_gs'?1:0)}
+function furnPrice(id,extra){const n=furnCount(id)+(extra|0);return id==='_sh'?5000+3000*n:id==='_ds'?9000+5000*n:id==='_gs'?12000+6000*n:id==='_rk'?8000*n:40000*n}
 function boxCount(){return G.boxes.length+G.pend.length}
 function truckLoad(){while(G.pend.length){const used={};G.boxes.forEach(b=>{if(b.loc==='t')used[b.sl]=1});let s=-1;for(let i=0;i<TRUCK_CAP;i++)if(!used[i]){s=i;break}if(s<0)break;
   const gd=G.pend.shift();G.boxes.push({id:G.nid++,gid:gd,n:isSp(gd)?1:csOf(gd),x:0,z:0,held:0,open:0,loc:'t',sl:s})}}
 function truckSlot(sl){return [-2.7+(sl%5)*0.75,sl<5?-0.45:0.45]}
 function truckPlace(w){const t=w.truck,c=Math.cos(t.rot),s=Math.sin(t.rot);w.boxes.forEach(b=>{if(b.loc==='t'&&!b.held){const q=truckSlot(b.sl);b.x=t.x+q[0]*c-q[1]*s;b.z=t.z+q[0]*s+q[1]*c}})}
 function truckTick(dt){const t=G.truck;
-  if(t.st===0){if(G.pend.length){t.st=1;t.x=-70;t.z=22;t.rot=0;t.path=TRUCK_IN.map(p=>p.slice());truckLoad()}}
+  if(t.st===0){if(G.pend.length){t.st=1;t.x=-70;t.z=22;t.rot=0;t.path=TRUCK_IN.map(p=>[p[0],p[1]<-18?p[1]-2.5*(G.eb|0):p[1]]);truckLoad()}}
   else if(t.st===1){truckLoad();if(follow(t,8,dt)){t.st=2;t.rot=0;t.t=0}}
-  else if(t.st===2){truckLoad();if(G.boxes.some(b=>b.loc==='t'))t.t=0;else{t.t+=dt;if(t.t>2.5){t.st=3;t.path=TRUCK_OUT.map(p=>p.slice())}}}
+  else if(t.st===2){truckLoad();if(G.boxes.some(b=>b.loc==='t'))t.t=0;else{t.t+=dt;if(t.t>2.5){t.st=3;t.path=TRUCK_OUT.map(p=>[p[0],p[1]<-18?p[1]-2.5*(G.eb|0):p[1]])}}}
   else if(t.st===3){if(follow(t,8,dt))t.st=0}
   if(t.st)truckPlace(G)}
 function moveTo(o,tx,tz,sp,dt){const dx=tx-o.x,dz=tz-o.z,d=Math.hypot(dx,dz);if(d<0.02)return true;const s=Math.min(d,sp*dt);o.x+=dx/d*s;o.z+=dz/d*s;
@@ -716,7 +731,7 @@ function stockTick(c,h,s,ws,dt){const me='@'+c.id;let b=c.box?G.boxes.find(x=>x.
     if(!t){const free=G.boxes.filter(x=>!x.held&&!isShBox(x.gid)&&!G.crew.some(o=>o!==c&&o.task===x.id));
       t=(G.truck.st===2&&free.find(x=>x.loc==='t'))||free.find(x=>x.loc!=='t'&&x.n>0&&rowFor(x.gid)>=0)||free.find(x=>!x.loc&&x.n>0&&rackFree()>=0)||null;c.task=t?t.id:0}
     if(!t){crewGo(c,h[0],h[1],ws,dt);return}
-    const f=t.loc==='t'?[t.x,-22.0]:t.loc==='r'?rackFront(Math.floor(t.sl/RACK_CAP)):[t.x,t.z];
+    const f=t.loc==='t'?[t.x,ZRv()-2.3]:t.loc==='r'?rackFront(Math.floor(t.sl/RACK_CAP)):[t.x,t.z];
     if(crewGo(c,f[0],f[1],ws,dt)){t.held=me;t.loc=0;t.open=isSp(t.gid)?0:1;c.box=t.id;c.task=0;c.t=0}
     return}
   if(b.n>0){const ri=rowFor(b.gid);
@@ -848,7 +863,9 @@ function act(a,dry){
   if(a.a==='shelfPut'){const b=G.boxes.find(b=>b.id===a.box);if(!b||b.held!==a.who||!isShBox(b.gid))return no('箱を持っていません');const x=Math.round((+a.x||0)*4)/4,z=Math.round((+a.z||0)*4)/4,bad=BAD;
     if(b.gid==='_rg'){const r=((a.r|0)%4+4)%4;if(G.regs.length>=8)return no('レジは8台までです');if(!placeOk('reg',G.regs.length,x,z,r))return no(bad);if(dry)return ok();G.regs.push([x,z,r]);G.regQ.push([]);G.bills.push(null);G.regBy.push(0);G.regT.push(0)}
     else if(b.gid==='_rk'){const r=(a.r|0)%2?1:0;if(!placeOk('rk',G.rk.length,x,z,r))return no(bad);if(dry)return ok();G.rk.push([x,z,r])}
-    else{const gas=b.gid==='_gs',r=(a.r|0)%2?1:0;let i=-1;for(let k=gas?GAS0:0;k<(gas?NSH:GAS0);k++)if(!G.slots[k]){i=k;break}if(i<0)return no('これ以上は置けません');if(!placeOk('sh',i,x,z,r))return no(bad);
+    else if(b.gid==='_ds'){const r=(a.r|0)%2?1:0,n=DIR4[r],fr=[];for(let k=0;k<GAS0&&fr.length<2;k++)if(!G.slots[k])fr.push(k);if(fr.length<2)return no('これ以上は置けません');if(!placeOk('ds',-1,x,z,r))return no(bad);if(dry)return ok();
+      fr.forEach((i,k)=>{const sg=k?-1:1;G.slots[i]=1;G.sh[i]=[x+n[0]*0.42*sg,z+n[1]*0.42*sg,k?r+2:r];for(let q=0;q<ROWS;q++)G.rows[i*ROWS+q]={g:'',n:0,tag:''}})}
+    else{const gas=b.gid==='_gs',r=(a.r|0)&3;let i=-1;for(let k=gas?GAS0:0;k<(gas?NSH:GAS0);k++)if(!G.slots[k]){i=k;break}if(i<0)return no('これ以上は置けません');if(!placeOk('sh',i,x,z,r))return no(bad);
       if(dry)return ok();G.slots[i]=1;G.sh[i]=[x,z,r];for(let k=0;k<ROWS;k++)G.rows[i*ROWS+k]={g:'',n:0,tag:''}}
     G.boxes.splice(G.boxes.indexOf(b),1);restock();return ok()}
   // 配置モードから、棚・在庫棚・レジをダンボールに梱包する
@@ -865,13 +882,17 @@ function act(a,dry){
     const m='駐車スペースを広げました（'+(n+1)+'台分）';if(dry)return ok(m);G.money-=p;G.d.buy+=p;G.parkN=n+1;return ok(m)}
   if(a.a==='laneBuy'){const n=G.lanesN;if(n>=MAXLANE)return no('給油レーンは'+MAXLANE+'つまでです');if(G.level<LANE_LV[n])return no('次の給油レーンは Lv.'+LANE_LV[n]+' で買えます');const p=LANE_PRICE[n];if(G.money<p)return no('お金が足りません');
     const m='給油レーンを増やしました（'+(n+1)+'レーン）';if(dry)return ok(m);G.money-=p;G.d.buy+=p;G.lanesN=n+1;return ok(m)}
+  // 売り場／在庫スペースの拡張（店のレベルで買えるようになる）
+  if(a.a==='expand'){const b=a.k==='b',cur=b?G.eb:G.ex,E=(b?EXP_B:EXP_S)[cur],nm=b?'在庫スペース':'売り場';if(!E)return no('これ以上は広げられません');if(G.level<E.lv)return no('Lv.'+E.lv+' で買えるようになります');
+    if(G.phase!=='pre')return no('拡張できるのは CLOSE のあいだだけです');if(b&&G.truck.st)return no('トラックが帰ってからにしましょう');if(G.money<E.p)return no('お金が足りません');const m=nm+'を広げました';if(dry)return ok(m);
+    G.money-=E.p;G.d.buy+=E.p;if(b)G.eb++;else G.ex++;return ok(m)}
   if(a.a==='price'){const k=String(a.k||''),bp=basePrice(k);if(!bp)return no('');const step=FUELS[k]?1:10;let v=Math.round((+a.v||0)/step)*step;v=Math.max(Math.ceil(bp*0.5/step)*step,Math.min(Math.floor(bp*2/step)*step,v));if(dry)return ok();G.price[k]=v;return ok()}
   if(a.a==='shopName'){const n=String(a.n||'').trim().slice(0,12);if(!n)return no('名前を入れてください');if(dry)return ok('お店の名前を変えました');G.shop=n;return ok('お店の名前を変えました')}
   if(a.a==='hire'){const t=a.tier|0,R=TIERS[t];if(!R)return no('');if(R.lv>G.level)return no('Lv.'+R.lv+' で雇えるようになります');if(G.crew.length>=crewMax())return no(G.level<3?'アルバイトは Lv.3 から雇えます':'いまのレベルで雇えるのは'+crewMax()+'人までです');
     const m=crewName(a.sd)+'さん（'+R.n+'）を雇いました。仕事を割り当てましょう';if(dry)return ok(m);G.crew.push(newCrew(G,t,'none',G.crew.length,a.sd));return ok(m)}
   if(a.a==='fire'){const c=G.crew.find(c=>c.id===a.id);if(!c)return no('');if(dry)return ok('やめてもらいました');crewDrop(c);G.crew.splice(G.crew.indexOf(c),1);return ok('やめてもらいました')}
   if(a.a==='job'){const c=G.crew.find(c=>c.id===a.id);if(!c||JOBS.indexOf(a.job)<0)return no('');const m=crewName(c.sd)+'さんの仕事を「'+JOB_N[a.job]+'」にしました';if(dry)return ok(m);crewDrop(c);c.job=a.job;return ok(m)}
-  if(a.a==='move'){if(G.phase!=='pre')return no('配置を変えられるのは CLOSE のあいだだけです');const t=a.t==='reg'?'reg':a.t==='rk'?'rk':'sh',i=a.i|0,x=Math.round((+a.x||0)*4)/4,z=Math.round((+a.z||0)*4)/4,r=t==='reg'?((a.r|0)%4+4)%4:(a.r?1:0);
+  if(a.a==='move'){if(G.phase!=='pre')return no('配置を変えられるのは CLOSE のあいだだけです');const t=a.t==='reg'?'reg':a.t==='rk'?'rk':'sh',i=a.i|0,x=Math.round((+a.x||0)*4)/4,z=Math.round((+a.z||0)*4)/4,r=t==='rk'?(a.r?1:0):((a.r|0)%4+4)%4;
     if(i<0||(t==='sh'&&(i>=NSH||!G.slots[i]))||(t==='reg'&&i>=G.regs.length)||(t==='rk'&&i>=G.rk.length))return no('ありません');if(!placeOk(t,i,x,z,r))return no(BAD);if(dry)return ok();
     if(t==='sh')G.sh[i]=[x,z,r];else if(t==='rk'){G.rk[i]=[x,z,r];G.boxes.forEach(b=>{if(b.loc==='r'&&!b.held&&Math.floor(b.sl/RACK_CAP)===i){const p=rackPos(b.sl,isShBox(b.gid));b.x=p[0];b.z=p[1]}})}else{G.regs[i]=[x,z,r];G.crew.forEach(c=>{c.gx=null})}return ok()}
   // 道具（バット・雑巾・バケツ・モップ）：どこにでも置ける。PCでいつでも買える
@@ -896,12 +917,12 @@ function act(a,dry){
     const k=Math.min(VCAP-v.n,b.n),m=g.n+'を'+k+'本、自販機に補充しました';if(dry)return ok(m);v.g=b.gid;v.n+=k;b.n-=k;addXp(2);return ok(m)}
   return no('');
 }
-function snap(seq){const sy=o=>o.say&&o.say[1]>0?o.say[0]+1:0;return {n:seq,m:G.money,x:G.xp,l:G.level,t:[r1(G.tanks.r),r1(G.tanks.h),r1(G.tanks.d)],rw:G.rows.map(r=>[gi(r.g),r.n,gi(r.tag)]),sl:G.slots,sh:G.sh.map(q=>[r1(q[0]),r1(q[1]),q[2]]),rg:G.regs,nt:G.note,
+function snap(seq){const sy=o=>o.say&&o.say[1]>0?o.say[0]+1:0;return {n:seq,m:G.money,x:G.xp,l:G.level,t:[r1(G.tanks.r),r1(G.tanks.h),r1(G.tanks.d)],rw:G.rows.map(r=>[gi(r.g),r.n,gi(r.tag)]),sl:G.slots,sh:G.sh.map(q=>[Math.round(q[0]*100)/100,Math.round(q[1]*100)/100,q[2]]),rg:G.regs,nt:G.note,
   dy:G.day,ck:Math.round(G.clock),ph:PH.indexOf(G.phase),pr:G.price,cw:G.crew.map(c=>[c.id,c.tier,JOBS.indexOf(c.job),r1(c.x),r1(c.z),c.sd]),dp:G.drops.map(d=>[d.id,gi(d.gid),r1(d.x),r1(d.z)]),rp:G.report||0,
   bx:G.boxes.map(b=>[b.id,b.gid,b.n,r1(b.x),r1(b.z),b.held||0,b.open?1:0,b.loc||0,b.sl|0]),rk:G.rk,ln:G.lanesN,pk:G.parkN,pn:G.pend.length,tk:[G.truck.st,r1(G.truck.x),r1(G.truck.z),Math.round(G.truck.rot*100)/100],
   c:G.cars.map(c=>[c.id,c.col,r1(c.x),r1(c.z),Math.round(c.rot*100)/100,ST.indexOf(c.st),c.fuel,c.want,r1(c.filled),c.dirty?1:0,c.ty,c.lane,c.done?1:0,sy(c),c.lk]),
   u:G.custs.map(u=>[u.id,u.kind==='drv'?0:1,r1(u.x),r1(u.z),u.st==='flee'?(u.out?3:1):u.st==='down'?2:0,u.look|0,sy(u)]),b:G.bills,
-  tl:G.tools.map(t=>[t.id,t.k,r1(t.x),r1(t.z),t.held||0,t.w,Math.round(t.wet*100)/100,t.ft>0?1:0]),ms:G.mess.map(m=>[m.id,m.x,m.z,Math.round(m.hp*100)/100,m.v]),vd:G.vend.map(v=>[gi(v.g),v.n]),rb:G.regBy,sn:G.shop,sa:G.sales}}
+  tl:G.tools.map(t=>[t.id,t.k,r1(t.x),r1(t.z),t.held||0,t.w,Math.round(t.wet*100)/100,t.ft>0?1:0]),ms:G.mess.map(m=>[m.id,m.x,m.z,Math.round(m.hp*100)/100,m.v]),vd:G.vend.map(v=>[gi(v.g),v.n]),rb:G.regBy,ex:G.ex|0,eb:G.eb|0,sn:G.shop,sa:G.sales}}
 function applySnap(s){G.money=s.m;G.xp=s.x;G.level=s.l;G.tanks={r:s.t[0],h:s.t[1],d:s.t[2]};G.slots=Array.from(s.sl);if(s.sh)G.sh=Array.from(s.sh).map(q=>[q[0],q[1],q[2]]);if(s.rg)G.regs=Array.from(s.rg).map(q=>Array.from(q));G.note=Array.from(s.nt||[0,'']);
   const gid=i=>GOODS[i]?GOODS[i].id:'';G.rows=Array.from(s.rw||[]).map(a=>({g:gid(a[0]),n:a[1]|0,tag:gid(a[2])}));while(G.rows.length<NROW)G.rows.push({g:'',n:0,tag:''});restock();
   G.day=s.dy||1;G.clock=s.ck||OPEN_T;G.phase=PH[s.ph]||'pre';G.price=Object.assign({},s.pr||{});G.report=s.rp||null;
@@ -912,7 +933,7 @@ function applySnap(s){G.money=s.m;G.xp=s.x;G.level=s.l;G.tanks={r:s.t[0],h:s.t[1
   G.cars=Array.from(s.c||[]).map(a=>({id:a[0],col:a[1],x:a[2],z:a[3],rot:a[4],st:ST[a[5]],fuel:a[6],want:a[7],filled:a[8],dirty:!!a[9],ty:a[10]|0,lane:a[11]|0,done:a[12]?1:0,say:[a[13]?a[13]-1:0,a[13]?1:0],lk:a[14]|0,wait:0,wd:0,cq:0}));
   G.custs=Array.from(s.u||[]).map(a=>({id:a[0],kind:a[1]?'walk':'drv',x:a[2],z:a[3],st:a[4]===1||a[4]===3?'flee':a[4]===2?'down':'walk',out:a[4]===3?1:0,look:a[5]|0,say:[a[6]?a[6]-1:0,a[6]?1:0],items:[],want:[],path:[]}));G.bills=Array.from(s.b||[]);
   G.tools=Array.from(s.tl||[]).map(a=>({id:a[0],k:a[1],x:a[2],z:a[3],held:a[4]||0,w:a[5]|0,wet:+a[6]||0,ft:a[7]?1:0}));G.mess=Array.from(s.ms||[]).map(a=>({id:a[0],x:a[1],z:a[2],hp:a[3],v:a[4]|0}));
-  G.vend=Array.from(s.vd||[]).map(a=>({g:gid(a[0]),n:a[1]|0}));while(G.vend.length<VN)G.vend.push({g:'',n:0});G.regBy=Array.from(s.rb||[]);G.shop=String(s.sn||'まんたんマート');G.sales=+s.sa||0}
+  G.vend=Array.from(s.vd||[]).map(a=>({g:gid(a[0]),n:a[1]|0}));while(G.vend.length<VN)G.vend.push({g:'',n:0});G.regBy=Array.from(s.rb||[]);G.ex=s.ex|0;G.eb=s.eb|0;G.shop=String(s.sn||'まんたんマート');G.sales=+s.sa||0}
 //</SIM>
 if(typeof module!=='undefined'&&module.exports&&typeof window==='undefined'){module.exports={setG:g=>{G=g},getG:()=>G,newWorld,defaultSave,tickSim,act,snap,applySnap,cashGiven,freeBoxes,route,rackPos,regPt,placeOk,accept,defPrice,GOODS,CARS};return}
 
@@ -925,8 +946,8 @@ function validSave(s){return s&&typeof s==='object'&&typeof s.money==='number'&&
 function fixSave(s){const d=defaultSave();return Object.assign(d,s,{tanks:Object.assign(d.tanks,s.tanks),price:Object.assign({},s.price||{}),boxes:Array.isArray(s.boxes)?s.boxes:[],pend:Array.isArray(s.pend)?s.pend:[],rows:Array.isArray(s.rows)?s.rows:[],crew:Array.isArray(s.crew)?s.crew:[],slots:Array.isArray(s.slots)?s.slots:d.slots,lanes:Math.max(1,Math.min(MAXLANE,(s.lanes|0)||1)),park:Math.max(1,Math.min(6,(s.park|0)||2)),racks:Math.max(1,Math.min(MAXRACK,(s.racks|0)||1)),
   tools:Array.isArray(s.tools)&&s.tools.length?s.tools:d.tools,vend:Array.isArray(s.vend)?s.vend:[],shop:String(s.shop||d.shop).slice(0,12),sales:+s.sales||0,pt:+s.pt||0,rid:String(s.rid||''),av:avFix(s.av),day:s.day||1,name:String(s.name||'').slice(0,10),code:String(s.code||'')})}
 function genCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';const b=new Uint8Array(8);crypto.getRandomValues(b);let s='';for(let i=0;i<8;i++)s+=A[b[i]%32];return 'GS-'+s.slice(0,4)+'-'+s.slice(4)}
-function pullSave(){if(!SAVE||!G||mode!=='play'||(ROOM&&!ROOM.host))return;SAVE.v=5;SAVE.money=G.money;SAVE.xp=G.xp;SAVE.level=G.level;SAVE.tanks={r:r1(G.tanks.r),h:r1(G.tanks.h),d:r1(G.tanks.d)};SAVE.stock=Object.assign({},G.stock);SAVE.rows=G.rows.map(r=>[gi(r.g),r.n,gi(r.tag)]);SAVE.crew=G.crew.map(c=>[c.tier,JOBS.indexOf(c.job),c.sd]);SAVE.slots=G.slots.slice();SAVE.served=G.served;SAVE.day=G.day;SAVE.price=Object.assign({},G.price);SAVE.rk=G.rk.map(q=>[r1(q[0]),r1(q[1]),q[2]]);SAVE.racks=G.rk.length;SAVE.lanes=G.lanesN;SAVE.sh=G.sh.map(q=>[r1(q[0]),r1(q[1]),q[2]]);SAVE.regs=G.regs.map(q=>q.slice());delete SAVE.reg;SAVE.park=G.parkN;SAVE.pend=G.pend.filter(Boolean);
-  SAVE.shop=G.shop;SAVE.sales=Math.round(G.sales);SAVE.vend=G.vend.map(v=>[gi(v.g),v.n]);delete SAVE.spare;delete SAVE.staff;
+function pullSave(){if(!SAVE||!G||mode!=='play'||(ROOM&&!ROOM.host))return;SAVE.v=5;SAVE.money=G.money;SAVE.xp=G.xp;SAVE.level=G.level;SAVE.tanks={r:r1(G.tanks.r),h:r1(G.tanks.h),d:r1(G.tanks.d)};SAVE.stock=Object.assign({},G.stock);SAVE.rows=G.rows.map(r=>[gi(r.g),r.n,gi(r.tag)]);SAVE.crew=G.crew.map(c=>[c.tier,JOBS.indexOf(c.job),c.sd]);SAVE.slots=G.slots.slice();SAVE.served=G.served;SAVE.day=G.day;SAVE.price=Object.assign({},G.price);SAVE.rk=G.rk.map(q=>[r1(q[0]),r1(q[1]),q[2]]);SAVE.racks=G.rk.length;SAVE.lanes=G.lanesN;SAVE.sh=G.sh.map(q=>[Math.round(q[0]*100)/100,Math.round(q[1]*100)/100,q[2]]);SAVE.regs=G.regs.map(q=>q.slice());delete SAVE.reg;SAVE.park=G.parkN;SAVE.pend=G.pend.filter(Boolean);
+  SAVE.shop=G.shop;SAVE.ex=G.ex|0;SAVE.eb=G.eb|0;SAVE.sales=Math.round(G.sales);SAVE.vend=G.vend.map(v=>[gi(v.g),v.n]);delete SAVE.spare;delete SAVE.staff;
   SAVE.tools=G.tools.map(t=>{const me=t.held===CID;return [t.k,r1(me?P.x:t.x),r1(me?P.z:t.z),t.ft>0?3:t.w,Math.round(t.wet*100)/100]});
   SAVE.boxes=G.boxes.map(b=>{const me=b.held===CID;return [b.gid,b.n,b.open?1:0,b.held?0:(b.loc||0),b.sl|0,r1(me?P.x:b.x),r1(me?P.z:b.z)]})}
 function saveLocal(){pullSave();lsSet()}
@@ -1097,30 +1118,20 @@ const parkG=PARKX.map(x=>{const g=new T.Group();scene.add(g);[-1.75,1.75].forEac
 // 当たり判定用の見えないメッシュ・札
 const hitM0=new T.MeshBasicMaterial({visible:false}),eyeM0=mat(0x1c1f24,{roughness:0.3});
 const plates=[];
-function plate(txt,bg,w,h,x,y,z){const t=textTex(256,Math.round(256*h/w),(g,W,H)=>{g.fillStyle=bg;g.fillRect(0,0,W,H);g.fillStyle='#f0d9a8';g.font='500 '+Math.round(H*0.54)+'px '+FONT;g.textAlign='center';g.textBaseline='middle';g.fillText(txt,W/2,H/2+2)});
-  plates.push(t);return box(w,h,0.05,mat(0xffffff,{map:t,keepMap:true,roughness:0.6}),x,y,z,null,false)}
+function plate(txt,bg,w,h,x,y,z,par){const t=textTex(256,Math.round(256*h/w),(g,W,H)=>{g.fillStyle=bg;g.fillRect(0,0,W,H);g.fillStyle='#f0d9a8';g.font='500 '+Math.round(H*0.54)+'px '+FONT;g.textAlign='center';g.textBaseline='middle';g.fillText(txt,W/2,H/2+2)});
+  plates.push(t);return box(w,h,0.05,mat(0xffffff,{map:t,keepMap:true,roughness:0.6}),x,y,z,par||null,false)}
 // store（幅14m×奥行10m）
 const wallM=M(0xf0e9db,{roughness:0.92}),glassM=M(0x9fd0e6,{transparent:true,opacity:0.28,roughness:0.05,metalness:0.1});
-box(2.55,3.6,0.3,wallM,-5.875,1.8,ZB);box(9.95,3.6,0.3,wallM,2.175,1.8,ZB);box(1.8,1.2,0.3,wallM,AX,3.0,ZB);box(0.3,3.6,10,wallM,-HW,1.8,-9);box(0.3,3.6,10,wallM,HW,1.8,-9);
-box(5.4,2.6,0.2,glassM,-4.3,1.3,ZF);box(5.4,2.6,0.2,glassM,4.3,1.3,ZF);
-box(14.4,0.3,10.6,M(0xe9e6dc),0,3.75,-9);
-const floorM=mat(HQ?0xffffff:0xd9dde0,{map:tileTex,roughness:0.65});tbox(14,0.06,10,floorM,0,0.03,-9,2);
+const floorM=mat(HQ?0xffffff:0xd9dde0,{map:tileTex,roughness:0.65});
 const shopName=()=>(G&&G.shop)||'まんたんマート';
 const signTex=textTex(1024,128,(g,w,h)=>{g.fillStyle='#3a2c22';g.fillRect(0,0,w,h);g.fillStyle='#f0d9a8';g.font='500 70px '+FONT;g.textAlign='center';g.textBaseline='middle';g.fillText(shopName(),w/2,h/2+4,w-60)});
-const signM=mat(0xffffff,{map:signTex,keepMap:true,roughness:0.6,emissive:0xffffff,emissiveIntensity:0,emissiveMap:signTex});box(14.4,1.1,0.24,signM,0,3.1,ZF);
-if(HQ){box(0.25,2.6,0.25,M(0x3a4048,{roughness:0.5,metalness:0.6}),-1.6,1.3,ZF);box(0.25,2.6,0.25,M(0x3a4048,{roughness:0.5,metalness:0.6}),1.6,1.3,ZF);
-  [[-4,-7],[-4,-11],[3.5,-7],[3.5,-11]].forEach(p=>box(2.4,0.06,0.5,lampM,p[0],3.58,p[1],null,false))}
+const signM=mat(0xffffff,{map:signTex,keepMap:true,roughness:0.6,emissive:0xffffff,emissiveIntensity:0,emissiveMap:signTex});
 const openTex=textTex(256,320,(g,w,h)=>{const op=G&&(G.phase==='open'||G.phase==='closing');g.fillStyle='#2b2420';g.fillRect(0,0,w,h);g.strokeStyle='#c9a15a';g.lineWidth=5;g.strokeRect(12,12,w-24,h-24);g.textAlign='center';g.textBaseline='middle';
   g.fillStyle='#f0d9a8';g.font='500 26px '+FONT;g.fillText(shopName(),w/2,58,w-40);g.font='600 '+(op?76:64)+'px '+FONT;g.fillStyle=op?'#a9d9b0':'#e9b08a';g.fillText(op?'OPEN':'CLOSE',w/2,150);
   g.fillStyle='#f0d9a8';g.font='500 24px '+FONT;g.fillText(op?'営業中':'準備中',w/2,222);g.font='400 18px '+FONT;g.fillText(op?'押すと次の日へ':'押すと開店',w/2,270)});
 // 店の前の立て看板。CLOSE のとき押すと開店、営業中に押すと「次の日へ」
 (function(){const g=new T.Group(),u={act:'sign'},om=mat(0xffffff,{map:openTex,keepMap:true,roughness:0.6});g.position.set(-2.6,0,-3.0);scene.add(g);
   [1,-1].forEach(sg=>{const f=clk(box(1.0,1.3,0.04,trimM,0,0.66,sg*0.2,g),u);f.rotation.x=-sg*0.17;const b=clk(box(0.88,1.16,0.03,om,0,0.67,sg*0.235,g),u);b.rotation.x=-sg*0.17})})();
-(function(){const seg=(w,d,x,z)=>{tbox(w,1.15,d,wainM,x,0.6,z,1.2);const tw=w>d?w:0.07,td=w>d?0.07:d;tbox(tw,0.07,td,trimM,x,1.2,z,1.5);tbox(tw,0.13,td,trimM,x,0.1,z,1.5)};
-  seg(2.25,0.04,-5.725,ZB+0.17);seg(9.65,0.04,2.025,ZB+0.17);seg(0.04,9.75,-HW+0.17,-8.975);seg(0.04,9.75,HW-0.17,-8.975);
-  [[-6.83,-4.12],[6.83,-4.12],[-6.83,-13.83],[6.83,-13.83]].forEach(p=>tbox(0.1,3.5,0.1,trimM,p[0],1.75,p[1],1.5));
-  [[-4,-6.2],[0.5,-6.2],[4.5,-9],[-4,-11.4],[0.5,-11.6],[4.5,-5.4]].forEach(p=>box(1.3,0.05,1.3,lampM,p[0],3.585,p[1],null,false));
-  [-0.4,0.4].forEach(dx=>tbox(0.1,2.6,0.24,trimM,dx*4.2,1.3,ZF,1.5))})();
 // 管理PC（店の右奥）
 tbox(2.2,0.07,1.0,deskM,PCPOS[0],0.8,PCPOS[1]-0.1,1.5);tbox(0.08,0.78,0.9,deskM,PCPOS[0]-1.02,0.39,PCPOS[1]-0.1,1.5);tbox(0.08,0.78,0.9,deskM,PCPOS[0]+1.02,0.39,PCPOS[1]-0.1,1.5);box(0.1,0.3,0.1,M(0x22262b,{roughness:0.5}),PCPOS[0],0.95,PCPOS[1]-0.37,null,false);
 clk(box(1.0,0.7,0.1,M(0x18212b,{roughness:0.3}),PCPOS[0],1.25,PCPOS[1]-0.35),{act:'pc'});clk(box(0.9,0.6,0.02,M(0x7fd3ea,{emissive:0x2a8aa6}),PCPOS[0],1.25,PCPOS[1]-0.28,null,false),{act:'pc'});
@@ -1207,10 +1218,8 @@ if(HQ){
   const steel=M(0x8d949b,{roughness:0.35,metalness:0.8}),dark=M(0x22262b,{roughness:0.5});
   box(2.6,0.04,1.4,M(0x7a2a24,{roughness:1}),0,0.075,-5.0,null,false);
   [[-0.8,0x2f6fd0],[1.7,0x1f8a4c]].forEach(p=>box(1.6,1.0,0.04,M(p[1],{roughness:0.6}),p[0],2.3,ZB+0.17,null,false));
-  box(14.8,0.35,0.3,M(0xd9d6cc,{roughness:0.8}),0,4.05,ZF+0.15);box(0.3,0.35,10.6,M(0xd9d6cc,{roughness:0.8}),-HW-0.25,4.05,-9);box(0.3,0.35,10.6,M(0xd9d6cc,{roughness:0.8}),HW+0.25,4.05,-9);
   [[-3.5,-10],[3,-11]].forEach(p=>{box(1.6,0.9,1.1,M(0xcfd3d6,{roughness:0.5,metalness:0.4}),p[0],4.35,p[1]);cyl(0.38,0.38,0.06,16,dark,p[0],4.82,p[1])});
   cyl(0.28,0.25,0.8,12,M(0x3d6b4a,{roughness:0.6}),5.9,0.4,-3.4);cyl(0.28,0.25,0.8,12,M(0x4a5a6b,{roughness:0.6}),6.5,0.4,-3.4);
-  for(let i=0;i<4;i++)cyl(0.36,0.36,0.22,16,M(0x1c1f24,{roughness:0.95}),8.0,0.11+i*0.22,-5.2);
   const brand=textTex(1024,64,(g,w,h)=>{g.fillStyle='#3a2c22';g.fillRect(0,0,w,h);g.fillStyle='#f0d9a8';g.font='500 40px '+FONT;g.textAlign='center';g.textBaseline='middle';g.fillText('まんたんステーション　MANTAN',w/2,h/2+3)});
   box(16.1,0.5,0.06,mat(0xffffff,{map:brand,roughness:0.5}),0.5,5.2,17.5,null,false);
   const wood=M(0x6b5a48,{roughness:1});
@@ -1222,23 +1231,39 @@ if(HQ){
   for(let i=0;i<7;i++)box(0.6,0.02,3.6,lineM,-40+i*1.1,0.056,22,null,false);
 }
 // 在庫スペース（店の奥の部屋）：在庫棚・ゴミ箱・搬入口
-const roomFloorM=mat(0xc79a63,{roughness:0.7});
-(function(){const fr=trimM;
-  box(0.12,2.4,0.4,fr,AX-0.92,1.2,ZB);box(0.12,2.4,0.4,fr,AX+0.92,1.2,ZB);box(1.96,0.12,0.4,fr,AX,2.44,ZB);
-  box(1.8,0.03,1.3,M(0x55606c,{roughness:1}),AX,0.06,ZB-0.6,null,false);
+const roomFloorM=mat(0xc79a63,{roughness:0.7}),ceilM=M(0xe9e6dc),edgeM=M(0xd9d6cc,{roughness:0.8});
+// ゴミ箱と札（動かない物）
+(function(){plate('在庫棚（1台に4箱）','#3a2c22',2.6,0.42,1.9,2.6,ZB-0.2);plate('ゴミ箱','#3a2c22',1.2,0.36,BIN[0],2.0,ZB-0.2);
   plate('売り場へ','#3a2c22',1.5,0.4,AX,2.9,ZB-0.2);plate('在庫スペース','#3a2c22',1.9,0.4,AX,2.85,ZB+0.18);
-  box(0.3,3.6,5.7,wallM,-HW,1.8,-16.85);box(0.3,3.6,5.7,wallM,HW,1.8,-16.85);box(6.45,3.6,0.3,wallM,-3.925,1.8,ZR);box(5.45,3.6,0.3,wallM,4.425,1.8,ZR);box(2.4,1.0,0.3,wallM,0.5,3.1,ZR);
-  box(14.4,0.3,5.55,M(0xe9e6dc),0,3.75,-16.925);tbox(14,0.06,5.5,roomFloorM,0,0.03,-16.85,2.4);
-  box(0.08,2.6,0.32,fr,-0.66,1.3,ZR);box(0.08,2.6,0.32,fr,1.66,1.3,ZR);box(2.4,0.08,0.32,fr,0.5,2.56,ZR);
-  plate('搬入口','#3a2c22',1.6,0.42,0.5,3.05,ZR-0.18);
-  [[-4,-17],[3,-17]].forEach(p=>box(2.2,0.06,0.5,lampM,p[0],3.58,p[1],null,false));
-  box(0.24,0.012,3.0,M(0xe2a400,{roughness:0.8}),0.5,0.067,-18.1,null,false);
   if(MODELS.pallet)place(MODELS.pallet(),-5.6,-18.7);
-  if(MODELS.cone){place(MODELS.cone(),-1.6,-21.4);place(MODELS.cone(),2.6,-21.4)}
-  plate('在庫棚（1台に4箱）','#3a2c22',2.6,0.42,1.9,2.6,ZB-0.2);plate('ゴミ箱','#3a2c22',1.2,0.36,BIN[0],2.0,ZB-0.2);
   if(HQ){const l=new T.PointLight(0xfff3df,0.45,16,2);l.position.set(0,3.4,-16.5);scene.add(l);ptLights.push([l,0.45])}
   const bu={act:'bin'};clk(cyl(0.44,0.38,1.0,20,M(0x5a5f64,{roughness:0.45,metalness:0.6}),BIN[0],0.5,BIN[1]),bu);clk(cyl(0.47,0.47,0.07,20,M(0x3a3e42,{roughness:0.45,metalness:0.6}),BIN[0],1.03,BIN[1]),bu);
   plate('ゴミ箱','#3a2c22',0.9,0.3,BIN[0],0.6,BIN[1]-0.47)})();
+// 建物（壁・床・屋根）。売り場は右へ、在庫スペースは奥へ拡張できるので、広さが変わったら作り直す
+let shellG=null,shellSig='';
+function buildShell(){const ex=G?G.ex|0:0,eb=G?G.eb|0:0,sig=ex+'|'+eb;if(shellG&&sig===shellSig)return;shellSig=sig;
+  if(shellG){scene.remove(shellG);shellG.traverse(o=>{if(o.geometry)o.geometry.dispose()})}
+  const g=shellG=new T.Group();scene.add(g);const xr=HW+2*ex,zr=ZR-2.5*eb,W=xr+HW,cx=(xr-HW)/2,D=ZB-zr,cz=(ZB+zr)/2,fr=trimM;
+  // 売り場
+  box(2.55,3.6,0.3,wallM,-5.875,1.8,ZB,g);box(xr+2.95,3.6,0.3,wallM,(xr-2.65)/2,1.8,ZB,g);box(1.8,1.2,0.3,wallM,AX,3.0,ZB,g);box(0.3,3.6,10,wallM,-HW,1.8,-9,g);box(0.3,3.6,10,wallM,xr,1.8,-9,g);
+  box(5.4,2.6,0.2,glassM,-4.3,1.3,ZF,g);box(xr-1.6,2.6,0.2,glassM,(xr+1.6)/2,1.3,ZF,g);
+  box(W+0.4,0.3,10.6,ceilM,cx,3.75,-9,g);tbox(W,0.06,10,floorM,cx,0.03,-9,2,g);box(W+0.4,1.1,0.24,signM,cx,3.1,ZF,g);
+  const seg=(w,d,x,z)=>{tbox(w,1.15,d,wainM,x,0.6,z,1.2,g);const tw=w>d?w:0.07,td=w>d?0.07:d;tbox(tw,0.07,td,trimM,x,1.2,z,1.5,g);tbox(tw,0.13,td,trimM,x,0.1,z,1.5,g)};
+  seg(2.25,0.04,-5.725,ZB+0.17);seg(xr+2.65,0.04,(xr-2.95)/2,ZB+0.17);seg(0.04,9.75,-HW+0.17,-8.975);seg(0.04,9.75,xr-0.17,-8.975);
+  [[-6.83,-4.12],[xr-0.17,-4.12],[-6.83,-13.83],[xr-0.17,-13.83]].forEach(p=>tbox(0.1,3.5,0.1,trimM,p[0],1.75,p[1],1.5,g));
+  for(let x=-4;x<xr-1.2;x+=4.4)[-6.2,-11.4].forEach(z=>box(1.3,0.05,1.3,lampM,x,3.585,z,g,false));
+  [-0.4,0.4].forEach(dx=>tbox(0.1,2.6,0.24,trimM,dx*4.2,1.3,ZF,1.5,g));
+  if(HQ){const pm=M(0x3a4048,{roughness:0.5,metalness:0.6});box(0.25,2.6,0.25,pm,-1.6,1.3,ZF,g);box(0.25,2.6,0.25,pm,1.6,1.3,ZF,g);
+    box(W+0.8,0.35,0.3,edgeM,cx,4.05,ZF+0.15,g);box(0.3,0.35,10.6,edgeM,-HW-0.25,4.05,-9,g);box(0.3,0.35,10.6,edgeM,xr+0.25,4.05,-9,g)}
+  // 在庫スペース
+  box(0.12,2.4,0.4,fr,AX-0.92,1.2,ZB,g);box(0.12,2.4,0.4,fr,AX+0.92,1.2,ZB,g);box(1.96,0.12,0.4,fr,AX,2.44,ZB,g);
+  box(1.8,0.03,1.3,M(0x55606c,{roughness:1}),AX,0.06,ZB-0.6,g,false);
+  box(0.3,3.6,D,wallM,-HW,1.8,cz,g);box(0.3,3.6,D,wallM,xr,1.8,cz,g);box(6.45,3.6,0.3,wallM,-3.925,1.8,zr,g);box(xr-1.55,3.6,0.3,wallM,(xr+1.85)/2,1.8,zr,g);box(2.4,1.0,0.3,wallM,0.5,3.1,zr,g);
+  box(W+0.4,0.3,D-0.15,ceilM,cx,3.75,cz-0.075,g);tbox(W,0.06,D-0.2,roomFloorM,cx,0.03,cz,2.4,g);
+  box(0.08,2.6,0.32,fr,-0.66,1.3,zr,g);box(0.08,2.6,0.32,fr,1.66,1.3,zr,g);box(2.4,0.08,0.32,fr,0.5,2.56,zr,g);
+  plate('搬入口','#3a2c22',1.6,0.42,0.5,3.05,zr-0.18,g);
+  for(let x=-4;x<xr-1.2;x+=5)for(let z=-16.6;z>zr+1;z-=2.6)box(2.2,0.06,0.5,lampM,x,3.58,z,g,false);
+  box(0.24,0.012,3.0,M(0xe2a400,{roughness:0.8}),0.5,0.067,zr+1.6,g,false)}
 const rackG=[];
 // 在庫棚の3Dモデルは、置かれたときに作る（位置と向きは G.rk[i]）
 function buildRack(i){const g=new T.Group(),u={act:'rack',rk:i},post=M(0x4f6b8a,{roughness:0.5,metalness:0.4}),beam=M(0xe07a2e,{roughness:0.5,metalness:0.3}),oak=M(0xc9a57a,{roughness:0.75});g.visible=false;scene.add(g);
@@ -1295,41 +1320,59 @@ const facM=[];let stars=null;
   const n=HQ?700:300,ps=new Float32Array(n*3);for(let i=0;i<n;i++){const a=rr()*Math.PI*2,e=0.08+rr()*1.4;ps[i*3]=Math.cos(a)*Math.cos(e)*185;ps[i*3+1]=Math.sin(e)*185;ps[i*3+2]=Math.sin(a)*Math.cos(e)*185}
   const sg=new T.BufferGeometry();sg.setAttribute('position',new T.BufferAttribute(ps,3));
   stars=new T.Points(sg,new T.PointsMaterial({color:0xffffff,size:HQ?2.2:1.6,sizeAttenuation:false,transparent:true,opacity:0,fog:false,depthWrite:false,toneMapped:false}));stars.renderOrder=-0.8;stars.visible=false;stars.frustumCulled=false;scene.add(stars)})();
-// 商品モデル：1商品＝1メッシュ（部品をまとめ、色は頂点カラー）
-function mergeGeo(list){let n=0;const gs=list.map(e=>{const g=e[0].index?e[0].toNonIndexed():e[0];n+=g.attributes.position.count;return g}),pos=new Float32Array(n*3),nor=new Float32Array(n*3),col=new Float32Array(n*3);let o=0;
-  gs.forEach((g,k)=>{const c=LIN(list[k][1]),m=g.attributes.position.count;pos.set(g.attributes.position.array,o*3);nor.set(g.attributes.normal.array,o*3);for(let i=0;i<m;i++){col[(o+i)*3]=c.r;col[(o+i)*3+1]=c.g;col[(o+i)*3+2]=c.b}o+=m});
-  const out=new T.BufferGeometry();out.setAttribute('position',new T.BufferAttribute(pos,3));out.setAttribute('normal',new T.BufferAttribute(nor,3));out.setAttribute('color',new T.BufferAttribute(col,3));return out}
+// 商品モデル：1商品＝1メッシュ。色は頂点カラー、ラベル（商品名の印刷）は1枚のラベル画像から貼る
+const LAB={onigiri:['#f7f5ee','#1f2a22','#c8372d','紅しゃけ'],tea:['#2f6b34','#ffffff','#c9e08a','GREEN TEA'],pan:['#f7e9a0','#7a4a20','#e8b830','MELON PAN'],coffee:['#3a2a1e','#f0d9a8','#c9a15a','BLACK 無糖'],ramen:['#c8372d','#ffffff','#f1d35a','しょうゆ味'],canR:['#f2efe8','#b8322a','#b8322a','ガソリン 5L'],bento:['#f7f5ee','#3a2c22','#8a5a3a','BENTO'],ice:['#dff1f8','#2f6fd0','#8fd0e8','VANILLA'],canH:['#f2efe8','#a87c00','#e2a400','ガソリン 5L'],sand:['#fff7d6','#7a5a20','#f1d35a','EGG SAND'],canD:['#f2efe8','#1f5c3a','#2f8a55','DIESEL 5L'],oil:['#d9bf55','#2f3f66','#2f3f66','5W-30 4L'],washer:['#f2f2ee','#2f6fd0','#4a8fd6','WASHER 2L'],cola:['#c8372d','#ffffff','#ffffff','COLA'],energy:['#1f3f8a','#e8f04a','#c9ced3','ENERGY'],chips:['#e8b830','#7a2a1a','#c8372d','うすしお味'],choco:['#5a3320','#f0d9a8','#c9a15a','MILK'],karaage:['#f7f5ee','#7a3a1a','#b8742a','KARAAGE'],mag:['#c23b6a','#ffffff','#f7e9a0','WEEKLY'],shampoo:['#f7e9a0','#1f6b5a','#3a9a8a','CAR WASH'],pudding:['#fff3c4','#7a4a20','#f0cf6a','PUDDING'],unaju:['#1c1f24','#f0d9a8','#9a2a1a','特上'],water:['#e8f6fc','#2f6fd0','#9fd6f0','WATER'],gum:['#5aa66a','#ffffff','#dff1e0','MINT'],salad:['#f7f5ee','#3f7a3a','#6fa04a','FRESH SALAD'],hotdog:['#fff7d6','#a8452a','#f1d35a','HOT DOG'],sports:['#f2f6fa','#2f6fd0','#3d7fd6','SPORTS'],fresh:['#f7e9a0','#6b3fa0','#9a6fc0','LAVENDER'],yakisoba:['#f4f2ea','#7a2a1a','#c8372d','ソース味'],gummy:['#c23b6a','#ffffff','#f7e9a0','GRAPE'],jerky:['#7a3a22','#f0d9a8','#e8b830','BEEF'],choux:['#fff3c4','#7a4a20','#e8c77a','CREAM'],melon:['#f7f5ee','#3f7a3a','#9fc46a','MUSK MELON']};
+const prodAtlas=textTex(2048,640,(g,w,h)=>{g.fillStyle='#fff';g.fillRect(0,0,w,h);GOODS.forEach((gd,i)=>{const c=i+1,x=(c%8)*256,y=Math.floor(c/8)*128,L=LAB[gd.id]||['#f4f2ea','#2b2420','#c9812f',''];
+  g.fillStyle=L[0];g.fillRect(x,y,256,128);g.fillStyle=L[2];g.fillRect(x,y,256,16);g.fillRect(x,y+116,256,12);g.beginPath();g.arc(x+30,y+44,13,0,7);g.fill();g.fillStyle=L[0];g.beginPath();g.arc(x+30,y+44,6,0,7);g.fill();
+  g.fillStyle=L[1];g.textAlign='center';g.textBaseline='middle';g.font='600 '+(gd.n.length>6?30:gd.n.length>4?38:46)+'px '+FONT;g.fillText(gd.n,x+140,y+56,196);g.font='500 19px '+FONT;g.globalAlpha=0.85;g.fillText(L[3],x+140,y+94,200);g.globalAlpha=1;
+  g.fillStyle='#fff';g.fillRect(x+212,y+84,34,26);g.fillStyle='#111';for(let k=0;k<7;k++)g.fillRect(x+215+k*4.3,y+87,k%3?1.5:2.6,20)})});
+plates.push(prodAtlas);
+function mergeGeo(list,cell){let n=0;const gs=list.map(e=>{const g=e[0].index?e[0].toNonIndexed():e[0];n+=g.attributes.position.count;return g}),pos=new Float32Array(n*3),nor=new Float32Array(n*3),col=new Float32Array(n*3),uv=new Float32Array(n*2);let o=0;
+  cell=cell|0;const u0=((cell%8)+0.03)/8,us=0.94/8,v0=1-(Math.floor(cell/8)+0.97)/5,vs=0.94/5;
+  gs.forEach((g,k)=>{const lb=!!list[k][2]&&cell>0,c=LIN(lb?0xffffff:list[k][1]),m=g.attributes.position.count,gu=g.attributes.uv;pos.set(g.attributes.position.array,o*3);nor.set(g.attributes.normal.array,o*3);
+    for(let i=0;i<m;i++){col[(o+i)*3]=c.r;col[(o+i)*3+1]=c.g;col[(o+i)*3+2]=c.b;if(lb&&gu){uv[(o+i)*2]=u0+gu.getX(i)*us;uv[(o+i)*2+1]=v0+gu.getY(i)*vs}else{uv[(o+i)*2]=0.06;uv[(o+i)*2+1]=0.9}}o+=m});
+  const out=new T.BufferGeometry();out.setAttribute('position',new T.BufferAttribute(pos,3));out.setAttribute('normal',new T.BufferAttribute(nor,3));out.setAttribute('color',new T.BufferAttribute(col,3));out.setAttribute('uv',new T.BufferAttribute(uv,2));return out}
 const prodGeo={};
-(function(){const PG=(g,x,y,z)=>{g.translate(x||0,y||0,z||0);return g},cy=(a,b,h,n)=>new T.CylinderGeometry(a,b,h,n||12),bx=(w,h,d)=>new T.BoxGeometry(w,h,d),RZ=(g,a)=>{g.rotateZ(a);return g},
-    tri=(r,d)=>{const g=cy(r,r,d,3);g.rotateX(-Math.PI/2);return g},dome=(r,sy,n)=>{const g=new T.SphereGeometry(r,n||12,8);g.scale(1,sy,1);return g},
-    // ガソリン携行缶：角ばった本体・上の取っ手・注ぎ口のキャップ・側面のX字プレス・ラベル
+(function(){const PG=(g,x,y,z)=>{g.translate(x||0,y||0,z||0);return g},cy=(a,b,h,n,open)=>new T.CylinderGeometry(a,b,h,n||16,1,!!open),bx=(w,h,d)=>new T.BoxGeometry(w,h,d),RZ=(g,a)=>{g.rotateZ(a);return g},RX=(g,a)=>{g.rotateX(a);return g},
+    lathe=(pts,n)=>new T.LatheGeometry(pts.map(p=>new T.Vector2(p[0],p[1])),n||16),
+    tri=(r,d)=>{const g=cy(r,r,d,3);g.rotateX(-Math.PI/2);return g},dome=(r,sy,n)=>{const g=new T.SphereGeometry(r,n||14,10);g.scale(1,sy,1);return g},
+    // ペットボトル：肩のすぼまった本体＋キャップ＋ぐるっと巻いたラベル
+    bottle=(b,cap)=>[[lathe([[0,0.004],[0.026,0],[0.034,0.01],[0.034,0.118],[0.031,0.136],[0.017,0.168],[0.0155,0.19],[0,0.19]]),b],[PG(cy(0.018,0.018,0.022,14),0,0.2,0),cap],[PG(cy(0.0185,0.0185,0.005,14),0,0.186,0),cap],[PG(cy(0.0348,0.0348,0.072,18,true),0,0.076,0),0,1]],
+    // 缶：上下のふち＋プルタブ＋ラベル
+    can=b=>[[lathe([[0,0.003],[0.024,0],[0.03,0.008],[0.03,0.1],[0.026,0.11],[0.024,0.113],[0,0.111]]),0xc9ced3],[PG(cy(0.0305,0.0305,0.088,18,true),0,0.054,0),0,1],[PG(bx(0.014,0.003,0.022),0,0.114,0.004),0x8d949b],[PG(cy(0.0245,0.0245,0.002,14),0,0.1105,0),b]],
+    // ガソリン携行缶：角ばった本体・取っ手・注ぎ口のキャップ・X字プレス・ラベル
     jerry=(c,dk)=>{const L=[[PG(bx(0.3,0.31,0.16),0,0.155,0),c],[PG(bx(0.24,0.05,0.16),-0.02,0.335,0),c],[PG(bx(0.3,0.012,0.164),0,0.31,0),dk],[PG(bx(0.3,0.012,0.164),0,0.012,0),dk],
         [PG(bx(0.02,0.06,0.1),-0.1,0.39,0),c],[PG(bx(0.02,0.06,0.1),0.0,0.39,0),c],[PG(bx(0.13,0.024,0.11),-0.05,0.425,0),c],
         [PG(RZ(cy(0.026,0.03,0.07,10),-0.5),0.115,0.365,0),0x22262b],[PG(RZ(cy(0.034,0.034,0.022,10),-0.5),0.135,0.4,0),0xd9bf55]];
-      [1,-1].forEach(s=>{L.push([PG(RZ(bx(0.3,0.018,0.008),0.72),0,0.175,s*0.082),dk],[PG(RZ(bx(0.3,0.018,0.008),-0.72),0,0.175,s*0.082),dk],[PG(bx(0.13,0.07,0.006),0,0.07,s*0.083),0xf2efe8],[PG(bx(0.13,0.016,0.008),0,0.045,s*0.083),dk])});return L},
-    bottle=(b,l,cap)=>[[PG(cy(0.034,0.034,0.15),0,0.075,0),b],[PG(cy(0.015,0.034,0.04),0,0.17,0),b],[PG(cy(0.016,0.016,0.025,10),0,0.2,0),cap],[PG(cy(0.0355,0.0355,0.06),0,0.085,0),l]],
-    can=(b,l)=>[[PG(cy(0.03,0.03,0.11),0,0.055,0),b],[PG(cy(0.0308,0.0308,0.04),0,0.06,0),l],[PG(cy(0.027,0.027,0.004),0,0.113,0),0xc9ced3]],
-    jug=(b,l,cap)=>[[PG(bx(0.16,0.25,0.1),0,0.125,0),b],[PG(cy(0.022,0.022,0.035,10),0.03,0.265,0),cap],[PG(bx(0.11,0.09,0.102),0,0.12,0),l]];
+      [1,-1].forEach(s=>{L.push([PG(RZ(bx(0.3,0.018,0.008),0.72),0,0.2,s*0.082),dk],[PG(RZ(bx(0.3,0.018,0.008),-0.72),0,0.2,s*0.082),dk],[PG(bx(0.2,0.1,0.006),0,0.08,s*0.083),0,1])});return L},
+    jug=(b,cap)=>[[PG(bx(0.16,0.2,0.1),0,0.1,0),b],[PG(bx(0.12,0.05,0.1),-0.02,0.225,0),b],[PG(bx(0.03,0.07,0.04),0.065,0.2,0),b],[PG(cy(0.022,0.022,0.04,12),-0.04,0.27,0),cap],[PG(bx(0.13,0.1,0.104),0,0.1,0),0,1]],
+    bag=(w,h,d)=>[[PG(bx(w,h,d),0,h/2+0.008,0),0,1],[PG(bx(w,0.014,d*0.4),0,0.007,0),0xc9ced3],[PG(bx(w,0.014,d*0.4),0,h+0.015,0),0xc9ced3]],
+    tray=(a,b,c)=>[[PG(bx(0.25,0.035,0.17),0,0.0175,0),0x1c1f24],[PG(bx(0.115,0.016,0.15),-0.06,0.04,0),0xf4f2ea],[PG(dome(0.012,1,8),-0.06,0.05,0),0xc8372d],[PG(bx(0.1,0.02,0.068),0.062,0.042,-0.04),a],[PG(bx(0.1,0.02,0.068),0.062,0.042,0.04),b],[PG(bx(0.004,0.022,0.15),0.005,0.04,0),0x1c1f24],[PG(bx(0.09,0.002,0.05),-0.06,0.062,0.045),0,1]],
+    cup=(b,lid)=>[[lathe([[0,0.003],[0.033,0],[0.045,0.058],[0.048,0.062],[0,0.062]],14),b],[PG(cy(0.046,0.046,0.003,16),0,0.0645,0),0,1],[PG(bx(0.02,0.002,0.02),0.05,0.064,0),lid]];
   const PROD={
-    onigiri:[[PG(tri(0.1,0.07),0,0.05,0),0xf4f2ea],[PG(bx(0.1,0.06,0.074),0,0.03,0),0x1f2a22],[PG(bx(0.05,0.03,0.076),0,0.085,0),0xc8372d]],
-    tea:bottle(0x86a646,0x2f6b34,0xf2f2ee),cola:bottle(0x2a1814,0xc8372d,0xc8372d),
-    pan:[[PG(dome(0.09,0.55),0,0.05,0),0xd9a85a],[PG(dome(0.07,0.5,10),0,0.075,0),0xe8c77a]],
-    coffee:can(0x4a3526,0xc9a15a),energy:can(0x2f6fd0,0xc9ced3),
-    ramen:[[PG(cy(0.066,0.046,0.11,14),0,0.055,0),0xf4f2ea],[PG(cy(0.064,0.056,0.04,14),0,0.065,0),0xc8372d],[PG(cy(0.068,0.068,0.006,14),0,0.113,0),0xf0e6c8]],
+    onigiri:[[PG(tri(0.1,0.07),0,0.05,0),0xf7f5ee],[PG(bx(0.105,0.058,0.074),0,0.029,0),0x1f2a22],[PG(bx(0.07,0.04,0.002),0,0.07,0.037),0,1],[PG(bx(0.012,0.1,0.076),0,0.05,0),0xdfe8e0]],
+    tea:bottle(0x86a646,0xf2f2ee),cola:bottle(0x2a1814,0xc8372d),water:bottle(0xcfeaf6,0x2f6fd0),sports:bottle(0xeef3f7,0x3d7fd6),
+    pan:[[PG(dome(0.09,0.5),0,0.045,0),0xd9a85a],[PG(dome(0.075,0.48,12),0,0.062,0),0xe8c77a],[PG(RX(bx(0.15,0.004,0.01),0),0,0.094,0.03),0xc79a4a],[PG(bx(0.15,0.004,0.01),0,0.094,-0.03),0xc79a4a],[PG(bx(0.01,0.004,0.15),0.03,0.094,0),0xc79a4a],[PG(bx(0.01,0.004,0.15),-0.03,0.094,0),0xc79a4a],[PG(bx(0.06,0.002,0.03),0,0.1,0),0,1]],
+    coffee:can(0x4a3526),energy:can(0x2f6fd0),
+    ramen:[[lathe([[0,0.004],[0.044,0],[0.066,0.104],[0.07,0.108],[0.07,0.112],[0,0.112]]),0xf4f2ea],[PG(cy(0.064,0.051,0.066,18,true),0,0.062,0),0,1],[PG(bx(0.03,0.002,0.03),0.075,0.112,0),0xf0e6c8]],
     canR:jerry(0xc8372d,0x8f241e),canH:jerry(0xe2a400,0xa87c00),canD:jerry(0x2f8a55,0x1f5c3a),
-    bento:[[PG(bx(0.25,0.04,0.17),0,0.02,0),0x1c1f24],[PG(bx(0.11,0.02,0.15),-0.06,0.046,0),0xf4f2ea],[PG(bx(0.1,0.022,0.07),0.06,0.047,-0.04),0x8a5a3a],[PG(bx(0.1,0.022,0.07),0.06,0.047,0.04),0x6fa04a]],
-    karaage:[[PG(bx(0.25,0.04,0.17),0,0.02,0),0x1c1f24],[PG(bx(0.11,0.02,0.15),-0.06,0.046,0),0xf4f2ea],[PG(dome(0.035,0.7,8),0.04,0.05,-0.04),0xb8742a],[PG(dome(0.035,0.7,8),0.09,0.05,0.02),0xa8641f],[PG(dome(0.035,0.7,8),0.035,0.05,0.045),0xc08030]],
-    unaju:[[PG(bx(0.2,0.05,0.2),0,0.025,0),0x1c1f24],[PG(bx(0.204,0.012,0.204),0,0.046,0),0x9a2a1a],[PG(bx(0.17,0.01,0.17),0,0.054,0),0xf4f2ea],[PG(bx(0.15,0.014,0.1),0,0.06,0),0x6b3a1a]],
-    ice:[[PG(cy(0.046,0.036,0.06),0,0.03,0),0x9fd3e8],[PG(cy(0.048,0.048,0.012),0,0.066,0),0xf4f2ea]],
-    pudding:[[PG(cy(0.042,0.032,0.055),0,0.0275,0),0xf0cf6a],[PG(cy(0.033,0.032,0.012),0,0.006,0),0x7a4a20],[PG(cy(0.044,0.044,0.006),0,0.058,0),0xf4f2ea]],
-    sand:[[PG(tri(0.09,0.07),0,0.045,0),0xf7f1df],[PG(bx(0.1,0.018,0.072),0,0.03,0),0xf1d35a],[PG(bx(0.06,0.012,0.073),0,0.055,0),0x6fa04a]],
-    chips:[[PG(bx(0.14,0.19,0.05),0,0.095,0),0xe8b830],[PG(bx(0.142,0.05,0.052),0,0.11,0),0xc8372d],[PG(bx(0.14,0.012,0.02),0,0.196,0),0xc9ced3]],
-    choco:[[PG(bx(0.15,0.022,0.07),0,0.011,0),0x5a3320],[PG(bx(0.07,0.024,0.072),0,0.012,0),0xc9a15a]],
-    mag:[[PG(bx(0.2,0.016,0.27),0,0.008,0),0xc23b6a],[PG(bx(0.16,0.017,0.08),0,0.009,-0.07),0xf7f5ee],[PG(bx(0.1,0.017,0.1),0.02,0.009,0.05),0x3d7fd6]],
-    oil:[[PG(bx(0.15,0.26,0.09),0,0.13,0),0x2f3f66],[PG(cy(0.02,0.02,0.04,10),0.04,0.28,0),0x8d949b],[PG(bx(0.1,0.1,0.092),0,0.13,0),0xd9bf55]],
-    washer:jug(0x4a8fd6,0xf2f2ee,0xf2f2ee),shampoo:jug(0x3a9a8a,0xf7e9a0,0x22262b)};
-  for(const k in PROD)prodGeo[k]=mergeGeo(PROD[k]);prodGeo._slip=mergeGeo([[PG(bx(0.2,0.008,0.28),0,0.004,0),0xf7f5ee],[PG(bx(0.16,0.009,0.03),0,0.0045,0.09),0x8d949b]])})();
-const prodM=HQ?new T.MeshStandardMaterial({vertexColors:true,roughness:0.55}):new T.MeshLambertMaterial({vertexColors:true});if(HQ)allM.push(prodM);
+    bento:tray(0x8a5a3a,0x6fa04a),karaage:tray(0xb8742a,0xa8641f),
+    unaju:[[PG(bx(0.2,0.05,0.2),0,0.025,0),0x1c1f24],[PG(bx(0.204,0.012,0.204),0,0.046,0),0x9a2a1a],[PG(bx(0.17,0.01,0.17),0,0.054,0),0xf4f2ea],[PG(bx(0.15,0.014,0.1),0,0.06,0),0x6b3a1a],[PG(bx(0.15,0.015,0.004),0,0.06,0.02),0x4a2410],[PG(bx(0.15,0.015,0.004),0,0.06,-0.02),0x4a2410],[PG(bx(0.07,0.002,0.03),0.05,0.068,0.07),0,1]],
+    ice:cup(0x9fd3e8,0xf4f2ea),pudding:cup(0xf0cf6a,0x7a4a20),
+    sand:[[PG(tri(0.09,0.07),0,0.045,0),0xf7f1df],[PG(bx(0.1,0.02,0.072),0,0.03,0),0xf1d35a],[PG(bx(0.07,0.012,0.073),0,0.052,0),0x6fa04a],[PG(bx(0.06,0.035,0.002),0,0.04,0.037),0,1]],
+    chips:bag(0.14,0.19,0.05),gummy:bag(0.1,0.14,0.034),jerky:bag(0.12,0.17,0.034),
+    choco:[[PG(bx(0.15,0.02,0.07),0,0.01,0),0,1],[PG(bx(0.03,0.021,0.071),0.06,0.0105,0),0xc9a15a]],
+    gum:[[PG(bx(0.1,0.022,0.05),0,0.011,0),0,1],[PG(bx(0.012,0.023,0.051),0.045,0.0115,0),0xc9ced3]],
+    mag:[[PG(bx(0.2,0.014,0.27),0,0.007,0),0xf7f5ee],[PG(RX(bx(0.2,0.002,0.27),0),0,0.015,0),0,1]],
+    oil:jug(0x2f3f66,0x8d949b),washer:jug(0x4a8fd6,0xf2f2ee),shampoo:jug(0x3a9a8a,0x22262b),
+    salad:[[lathe([[0,0.003],[0.048,0],[0.07,0.066],[0.073,0.07],[0,0.07]]),0xdfe8f0],[PG(dome(0.058,0.4,10),0,0.066,0),0x6fa04a],[PG(dome(0.018,0.8,8),0.025,0.08,0.01),0xc8372d],[PG(dome(0.016,0.8,8),-0.02,0.08,-0.02),0xf1d35a],[PG(cy(0.05,0.05,0.002,16),0,0.094,0),0,1]],
+    hotdog:[[PG(bx(0.2,0.01,0.075),0,0.005,0),0xf4f2ea],[PG(RZ(cy(0.026,0.026,0.17,10),Math.PI/2),0,0.032,0),0xd9a85a],[PG(RZ(cy(0.015,0.015,0.19,10),Math.PI/2),0,0.052,0),0xa8452a],[PG(bx(0.15,0.004,0.008),0,0.068,0),0xf1d35a],[PG(bx(0.06,0.05,0.066),0,0.03,0),0,1]],
+    fresh:[[lathe([[0,0.003],[0.03,0],[0.036,0.01],[0.034,0.07],[0.028,0.078],[0,0.078]]),0x9a6fc0],[PG(cy(0.0365,0.035,0.045,16,true),0,0.036,0),0,1],[PG(cy(0.026,0.028,0.03,12),0,0.092,0),0xf2f2ee],[PG(cy(0.008,0.008,0.012,8),0,0.112,0),0x8d949b]],
+    yakisoba:[[PG(bx(0.16,0.055,0.16),0,0.0275,0),0xf4f2ea],[PG(bx(0.162,0.036,0.162),0,0.03,0),0,1],[PG(bx(0.165,0.005,0.165),0,0.058,0),0xf0e6c8],[PG(bx(0.03,0.003,0.03),0.09,0.058,0),0xf0e6c8]],
+    choux:[[PG(dome(0.07,0.62),0,0.044,0),0xe0b868],[PG(dome(0.052,0.5,10),0,0.074,0),0xedd08a],[PG(dome(0.02,0.5,8),0.03,0.07,0.02),0xf4f2ea],[PG(cy(0.03,0.03,0.002,14),-0.01,0.1,0),0,1]],
+    melon:[[PG(bx(0.2,0.04,0.2),0,0.02,0),0xc9a57a],[PG(bx(0.18,0.01,0.18),0,0.042,0),0xf7f1df],[PG(dome(0.085,1,16),0,0.125,0),0x9fc46a],[PG(cy(0.006,0.008,0.05,6),0,0.225,0),0x6b5a3a],[PG(bx(0.07,0.006,0.012),0,0.25,0),0x6b5a3a],[PG(bx(0.1,0.03,0.002),0,0.02,0.101),0,1]]};
+  for(const k in PROD)prodGeo[k]=mergeGeo(PROD[k],gi(k)+1);prodGeo._slip=mergeGeo([[PG(bx(0.2,0.008,0.28),0,0.004,0),0xf7f5ee],[PG(bx(0.16,0.009,0.03),0,0.0045,0.09),0x8d949b]],0)})();
+const prodM=HQ?new T.MeshStandardMaterial({vertexColors:true,roughness:0.5,map:prodAtlas}):new T.MeshLambertMaterial({vertexColors:true,map:prodAtlas});if(HQ)allM.push(prodM);
 const prodScale=gid=>GMAP[gid]&&GMAP[gid].sz<3?1.3:1;
 // shelves：ふつうの棚（5段）は 0〜11、ガソリン専用棚（3段）は 12〜15。位置と向きは G.sh[i]
 const shelfG=[],goodsM={},rowHit=[];GOODS.forEach(g=>goodsM[g.id]=M(g.c,{roughness:0.6}));
@@ -1429,8 +1472,9 @@ const dirtM=new T.MeshLambertMaterial({map:dirtTex,transparent:true,depthWrite:f
 const CARTYPES=[{L:4.3,W:1.72,h1:0.84,roof:1.42,cf:0.78,cr:-1.55,rf:0.18,rr:-1.0},{L:3.4,W:1.5,h1:0.92,roof:1.64,cf:0.98,cr:-1.62,rf:0.6,rr:-1.52},{L:4.5,W:1.84,h1:1.02,roof:1.7,cf:0.9,cr:-2.1,rf:0.32,rr:-1.9},
   {L:3.4,W:1.48,h1:1.0,roof:1.85,cf:1.25,cr:-1.64,rf:1.0,rr:-1.58},{L:4.4,W:1.8,h1:0.74,roof:1.22,cf:0.6,cr:-1.5,rf:0.0,rr:-0.9},{L:4.7,W:1.82,h1:1.0,roof:1.82,cf:1.5,cr:-2.25,rf:1.0,rr:-2.15},{L:4.0,W:1.7,h1:0.88,roof:1.5,cf:0.7,cr:-1.9,rf:0.2,rr:-1.75},
   {L:4.5,W:1.76,h1:0.86,roof:1.44,cf:0.8,cr:-1.6,rf:0.2,rr:-1.05,pat:1},{L:4.6,W:1.98,h1:0.66,roof:1.12,cf:0.75,cr:-1.3,rf:0.05,rr:-0.8,wing:1},{L:4.45,W:1.86,h1:0.72,roof:1.26,cf:0.7,cr:-2.0,rf:0.05,rr:-0.6},{L:3.4,W:1.48,h1:0.92,roof:1.78,cf:1.42,cr:0.5,rf:1.2,rr:0.56,bed:1}];
+const FY=0.46;// 車の中は床までくり抜いてあり、窓から座席と人の体が見える
 CARTYPES.forEach(t=>{const L=t.L,h=t.h1,x0=-L/2,x1=L/2,s=new T.Shape();
-  s.moveTo(x0+0.15,0.28);s.lineTo(x1-0.15,0.28);s.quadraticCurveTo(x1,0.28,x1,0.45);s.lineTo(x1,h-0.2);s.quadraticCurveTo(x1,h-0.04,x1-0.3,h);s.lineTo(t.cf+0.05,h+0.02);s.lineTo(t.cr-0.05,h+0.02);s.lineTo(x0+0.25,h);s.quadraticCurveTo(x0,h-0.02,x0,h-0.2);s.lineTo(x0,0.45);s.quadraticCurveTo(x0,0.28,x0+0.15,0.28);
+  s.moveTo(x0+0.15,0.28);s.lineTo(x1-0.15,0.28);s.quadraticCurveTo(x1,0.28,x1,0.45);s.lineTo(x1,h-0.2);s.quadraticCurveTo(x1,h-0.04,x1-0.3,h);s.lineTo(t.cf+0.05,h+0.02);s.lineTo(t.cf-0.02,h+0.02);s.lineTo(t.cf-0.1,FY);s.lineTo(t.cr+0.1,FY);s.lineTo(t.cr+0.02,h+0.02);s.lineTo(t.cr-0.05,h+0.02);s.lineTo(x0+0.25,h);s.quadraticCurveTo(x0,h-0.02,x0,h-0.2);s.lineTo(x0,0.45);s.quadraticCurveTo(x0,0.28,x0+0.15,0.28);
   const d=t.W-0.16;t.body=new T.ExtrudeGeometry(s,{depth:d,bevelEnabled:true,bevelThickness:0.08,bevelSize:0.07,bevelSegments:HQ?2:1,curveSegments:HQ?5:2,steps:1});t.body.translate(0,0,-d/2);
   const c=new T.Shape();c.moveTo(t.cr,h);c.lineTo(t.cf,h);c.lineTo(t.rf,t.roof);c.lineTo(t.rr,t.roof);c.lineTo(t.cr,h);
   const d2=t.W-0.3;t.cab=new T.ExtrudeGeometry(c,{depth:d2,bevelEnabled:true,bevelThickness:0.05,bevelSize:0.04,bevelSegments:1,steps:1});t.cab.translate(0,0,-d2/2);
@@ -1440,7 +1484,7 @@ CARTYPES.forEach(t=>{const L=t.L,h=t.h1,x0=-L/2,x1=L/2,s=new T.Shape();
 const gWheel=new T.CylinderGeometry(0.33,0.33,0.24,HQ?20:10),gHub=new T.CylinderGeometry(0.19,0.19,0.26,12),gLamp=new T.BoxGeometry(0.08,0.13,0.34),gPlate=new T.BoxGeometry(0.03,0.16,0.42),gGrille=new T.BoxGeometry(0.05,0.2,0.9),gMirror=new T.BoxGeometry(0.1,0.1,0.16),
   gBlob=new T.PlaneGeometry(4.6,2.2),blobM=new T.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.22,depthWrite:false}),
   gPort=new T.BoxGeometry(0.2,0.2,0.02),gPortHit=new T.BoxGeometry(0.6,0.6,0.36),gPortEdge=new T.EdgesGeometry(new T.BoxGeometry(0.28,0.28,0.03)),portEdgeM=new T.LineBasicMaterial({color:0x4fc47a}),
-  gDrvT=new T.BoxGeometry(0.22,0.38,0.4),gDrvH=new T.SphereGeometry(0.125,12,10),gDrvHair=new T.SphereGeometry(0.132,12,8,0,Math.PI*2,0,Math.PI*0.5),gDrvEye=new T.SphereGeometry(0.02,6,5),gDrvArm=new T.BoxGeometry(0.09,0.3,0.09),gDrvNeck=new T.CylinderGeometry(0.045,0.05,0.1,8),gWheelS=new T.TorusGeometry(0.15,0.016,6,16);
+  gDrvT=new T.BoxGeometry(0.22,0.38,0.4),gDrvH=new T.SphereGeometry(0.125,12,10),gDrvHair=new T.SphereGeometry(0.132,12,8,0,Math.PI*2,0,Math.PI*0.5),gDrvEye=new T.SphereGeometry(0.02,6,5),gDrvArm=new T.BoxGeometry(0.09,0.3,0.09),gDrvHip=new T.BoxGeometry(0.22,0.14,0.36),gDrvLeg=new T.BoxGeometry(0.36,0.11,0.13),gDrvShin=new T.BoxGeometry(0.1,0.34,0.12),gDrvNeck=new T.CylinderGeometry(0.045,0.05,0.1,8),gWheelS=new T.TorusGeometry(0.15,0.016,6,16);
 function makeLabel(){const c=document.createElement('canvas');c.width=384;c.height=160;const t=prep(new T.CanvasTexture(c));const s=new T.Sprite(new T.SpriteMaterial({map:t,transparent:true,toneMapped:false}));s.scale.set(3.4,1.42,1);s.userData.c=c;return s}
 function drawLabel(s,lines,col){const c=s.userData.c,g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);g.fillStyle='rgba(247,242,232,0.94)';g.strokeStyle=col||'#3a2c22';g.lineWidth=4;
   const r=26;g.beginPath();g.moveTo(r+6,6);g.arcTo(378,6,378,154,r);g.arcTo(378,154,6,154,r);g.arcTo(6,154,6,6,r);g.arcTo(6,6,378,6,r);g.closePath();g.fill();g.stroke();
@@ -1450,20 +1494,25 @@ function drawLabel(s,lines,col){const c=s.userData.c,g=c.getContext('2d');g.clea
 function part(g,geo,mt,x,y,z,cast){const m=new T.Mesh(geo,mt);m.position.set(x,y,z);S(m,cast);g.add(m);return m}
 // 見た目ごとの肌・髪・服の色（車の運転席の人）
 const LOOKC=[null,{hair:0x8a8f98},{top:null},{skin:0x7bc96f,hair:null,top:0xb8c4cc,eye:1},{top:0xf49ac2,hair:0x7a3fc0}];
-function makeDriver(c,t){const g=new T.Group(),av=avRandom(c.id*31+7),lk=LOOKC[c.lk|0]||{},skin=M(lk.skin||('#'+av.skin),{roughness:0.75}),top=lk.top===null?skin:M(lk.top||('#'+av.top),{roughness:0.9});
-  part(g,gDrvT,top,0,0.19,0,false);[0.24,-0.24].forEach(z=>{const a=part(g,gDrvArm,top,0.16,0.2,z,false);a.rotation.z=1.0});part(g,gDrvNeck,skin,0,0.42,0,false);
-  const hd=part(g,gDrvH,skin,0.02,0.55,0,false);if(lk.eye)hd.scale.set(1,1.25,1.1);
-  if(lk.hair!==null)part(g,gDrvHair,M(lk.hair||('#'+av.hair),{roughness:0.9}),0.0,0.565,0,false);
-  [0.05,-0.05].forEach(z=>{const e=part(g,gDrvEye,eyeM0,0.125,0.57,z,false);if(lk.eye)e.scale.set(1,2.4,1.8)});
-  g.scale.setScalar(Math.max(0.6,Math.min(1,(t.roof-t.h1-0.03)/0.72)));g.position.set(t.cf-0.72,t.h1+0.03,t.W/2-0.48);return g}
-// 車内：床・ダッシュボード・ハンドル・座席（窓から中が見える）
-function carInside(g,t){const cl=t.cf-t.cr,dz=t.W/2-0.48,y=t.h1+0.03;part(g,new T.BoxGeometry(cl-0.06,0.03,t.W-0.36),carTrimM,(t.cf+t.cr)/2,y,0,false);
-  part(g,new T.BoxGeometry(0.26,0.13,t.W-0.4),carTrimM,t.cf-0.18,y+0.07,0,false);
-  const sw=part(g,gWheelS,carTrimM,t.cf-0.4,y+0.2,dz,false);sw.rotation.set(0,Math.PI/2,0);sw.rotation.z=0.35;part(g,new T.BoxGeometry(0.16,0.03,0.03),carTrimM,t.cf-0.34,y+0.17,dz,false).rotation.z=0.5;
-  const sh=Math.min(0.5,t.roof-t.h1-0.12);[dz,-dz].forEach(z=>{part(g,new T.BoxGeometry(0.42,0.1,0.44),seatM,t.cf-0.7,y+0.06,z,false);const b=part(g,new T.BoxGeometry(0.11,sh,0.42),seatM,t.cf-0.94,y+sh/2+0.04,z,false);b.rotation.z=-0.12});
-  if(cl>1.9)part(g,new T.BoxGeometry(0.12,Math.min(0.42,sh),t.W-0.46),seatM,t.cr+0.34,y+0.24,0,false).rotation.z=-0.15}
+function makeDriver(c,t){const g=new T.Group(),av=avRandom(c.id*31+7),lk=LOOKC[c.lk|0]||{},skin=M(lk.skin||('#'+av.skin),{roughness:0.75}),top=lk.top===null?skin:M(lk.top||('#'+av.top),{roughness:0.9}),bot=lk.top===null?skin:M('#'+av.bot,{roughness:0.9});
+  // 腰・太もも・胴・腕・首・頭（座った姿勢）
+  part(g,gDrvHip,bot,0,0.07,0,false);[0.1,-0.1].forEach(z=>{part(g,gDrvLeg,bot,0.24,0.09,z,false);part(g,gDrvShin,bot,0.46,-0.06,z,false).rotation.z=0.5});
+  part(g,gDrvT,top,-0.02,0.34,0,false).rotation.z=0.12;[0.24,-0.24].forEach(z=>{const a=part(g,gDrvArm,top,0.16,0.42,z,false);a.rotation.z=1.05});part(g,gDrvNeck,skin,-0.03,0.58,0,false);
+  const hd=part(g,gDrvH,skin,-0.01,0.71,0,false);if(lk.eye)hd.scale.set(1,1.25,1.1);
+  if(lk.hair!==null)part(g,gDrvHair,M(lk.hair||('#'+av.hair),{roughness:0.9}),-0.03,0.725,0,false);
+  [0.05,-0.05].forEach(z=>{const e=part(g,gDrvEye,eyeM0,0.095,0.73,z,false);if(lk.eye)e.scale.set(1,2.4,1.8)});
+  const sy=FY+0.16;g.scale.setScalar(Math.max(0.55,Math.min(1,(t.roof-0.05-sy)/0.86)));g.position.set(t.cf-0.95,sy,t.W/2-0.48);return g}
+// 車内：床・ダッシュボード・ハンドル・座席・ドアの内張り
+function carInside(g,t,pm){const cl=t.cf-t.cr,dz=t.W/2-0.48,mx=(t.cf+t.cr)/2,dk=carTrimM;
+  part(g,new T.BoxGeometry(cl-0.2,0.02,t.W-0.3),dk,mx,FY+0.012,0,false);
+  [1,-1].forEach(sg=>{part(g,new T.BoxGeometry(cl+0.06,t.h1-0.3,0.05),pm,mx,(t.h1+0.3)/2,sg*(t.W/2-0.025));part(g,new T.BoxGeometry(cl-0.1,t.h1-FY-0.06,0.02),seatM,mx,(t.h1+FY)/2,sg*(t.W/2-0.07),false)});
+  part(g,new T.BoxGeometry(0.2,t.h1-FY,t.W-0.3),dk,t.cf-0.2,(t.h1+FY)/2,0,false);
+  const sw=part(g,gWheelS,dk,t.cf-0.42,Math.min(t.h1+0.08,t.roof-0.2),dz,false);sw.rotation.y=Math.PI/2;sw.rotation.x=0;sw.rotation.z=0.35;
+  const sh=Math.max(0.3,Math.min(0.62,t.roof-FY-0.42));[dz,-dz].forEach(z=>{part(g,new T.BoxGeometry(0.44,0.12,0.44),seatM,t.cf-0.92,FY+0.1,z,false);const b=part(g,new T.BoxGeometry(0.11,sh,0.42),seatM,t.cf-1.17,FY+0.14+sh/2,z,false);b.rotation.z=-0.14});
+  if(cl>1.9){part(g,new T.BoxGeometry(0.44,0.12,t.W-0.5),seatM,t.cr+0.5,FY+0.1,0,false);part(g,new T.BoxGeometry(0.12,sh,t.W-0.5),seatM,t.cr+0.26,FY+0.14+sh/2,0,false).rotation.z=-0.16}}
 function makeCar(c,deco){const g=new T.Group(),u={act:'car',id:c.id},parts=[],t=CARTYPES[(c.ty|0)%CARTYPES.length],pm=paintM[c.col%paintM.length],ck=m=>{if(!deco)parts.push(clk(m,u));return m};
   ck(part(g,t.body,pm,0,0,0));part(g,t.cab,deco?darkGlassM:cabGlassM,0,0,0,false);part(g,t.roofG,pm,(t.rf+t.rr)/2,t.roof+0.035,0);
+  carInside(g,t,pm);
   // 柱（ピラー）
   [1,-1].forEach(sg=>{const z=sg*(t.W/2-0.16),a=part(g,t.pf,pm,(t.cf+t.rf)/2,(t.h1+t.roof)/2,z,false);a.rotation.z=t.wa;const b=part(g,t.pr,pm,(t.cr+t.rr)/2,(t.h1+t.roof)/2,z,false);b.rotation.z=t.ra});
   const mx=(t.cf+t.rf)/2+t.wn[0]*0.07,my=(t.h1+t.roof)/2+t.wn[1]*0.07,dirt=ck(part(g,t.dirtG,dirtM,mx,my,0,false));dirt.rotation.z=t.wa;dirt.renderOrder=2;
@@ -1480,7 +1529,7 @@ function makeCar(c,deco){const g=new T.Group(),u={act:'car',id:c.id},parts=[],t=
   let port=null,drv=null;
   if(!deco){const ps=(c.lane|0)%2?-1:1,pu={act:'port',id:c.id};port=new T.Group();port.position.set(-t.L/2+0.9,Math.min(0.8,t.h1-0.14),ps*(t.W/2+0.012));g.add(port);
     part(port,gPort,carTrimM,0,0,0,false);port.add(new T.LineSegments(gPortEdge,portEdgeM));const hm=new T.Mesh(gPortHit,hitM0);hm.position.z=ps*0.1;port.add(hm);parts.push(clk(hm,pu));
-    carInside(g,t);drv=makeDriver(c,t);g.add(drv)}
+    drv=makeDriver(c,t);g.add(drv)}
   const lab=makeLabel();lab.position.y=3.3;lab.visible=false;g.add(lab);scene.add(g);
   return {g:g,dirt:dirt,lab:lab,parts:parts,rot:c.rot,txt:'',port:port,drv:drv,ps:(c.lane|0)%2?-1:1,t:t}}
 
@@ -1646,6 +1695,7 @@ const glowG=new T.SphereGeometry(0.75,12,10),glowM=new T.MeshBasicMaterial({colo
 function sayLabel(m,idx){if(idx<0){if(m.sayL)m.sayL.visible=false;return}if(!m.sayL){m.sayL=makeLabel();m.sayL.scale.set(2.0,0.84,1);m.sayL.position.y=m.sayY||2.3;m.g.add(m.sayL)}
   if(m.sayI!==idx){m.sayI=idx;drawLabel(m.sayL,[SAY[idx]||'…'],'#8a5a3a')}m.sayL.visible=true}
 function syncScene(dt){
+  buildShell();
   const k=1-Math.exp(-12*dt),seen=new Set();
   for(const c of G.cars){seen.add(c.id);let m=carM.get(c.id);if(!m||(c.lane>=0&&m.ps!==(c.lane%2?-1:1))){if(m)dropCar(m);m=makeCar(c);carM.set(c.id,m);m.g.position.set(c.x,0,c.z)}
     const p=m.g.position;if(Math.abs(c.x-p.x)+Math.abs(c.z-p.z)>15){p.x=c.x;p.z=c.z}else{p.x+=(c.x-p.x)*k;p.z+=(c.z-p.z)*k}
@@ -1675,7 +1725,7 @@ function syncScene(dt){
   const peerPos=id=>{const pe=ROOM&&ROOM.peers.find(p=>p.d&&p.d.c===id&&p.d.p&&p.d.p.length>=2);return pe?[+pe.d.p[0]||0,+pe.d.p[1]||0]:null};
   const tk=G.truck;truckG.visible=tk.st>0;
   if(tk.st){const tp=truckG.position;if(Math.abs(tk.x-tp.x)+Math.abs(tk.z-tp.z)>15){tp.x=tk.x;tp.z=tk.z;truckRot=tk.rot}else{tp.x+=(tk.x-tp.x)*k;tp.z+=(tk.z-tp.z)*k;truckRot=lerpAng(truckRot,tk.rot,k)}truckG.rotation.y=-truckRot}
-  for(let i=0;i<NSH;i++){let sh=shelfG[i];if(G.slots[i]&&!sh)sh=shelfG[i]=buildShelf(i);if(!sh)continue;sh.g.visible=!!G.slots[i];if(sh.g.visible){const q=shOf(i);sh.g.position.set(q[0],0,q[1]);sh.g.rotation.y=q[2]?Math.PI/2:0}}
+  for(let i=0;i<NSH;i++){let sh=shelfG[i];if(G.slots[i]&&!sh)sh=shelfG[i]=buildShelf(i);if(!sh)continue;sh.g.visible=!!G.slots[i];if(sh.g.visible){const q=shOf(i);sh.g.position.set(q[0],0,q[1]);sh.g.rotation.y=(q[2]&3)*Math.PI/2}}
   for(let i=0;i<Math.max(G.regs.length,RGS.length);i++){let R=RGS[i];if(i<G.regs.length&&!R)R=RGS[i]=buildReg(i);if(!R)continue;R.g.visible=i<G.regs.length;if(R.g.visible){const q=regOf(i);R.g.position.set(q[0],0,q[1]);R.g.rotation.y=-q[2]*Math.PI/2}}regSync(dt);
   for(let i=0;i<Math.max(G.rk.length,rackG.length);i++){let g=rackG[i];if(i<G.rk.length&&!g)g=rackG[i]=buildRack(i);if(!g)continue;g.visible=i<G.rk.length;if(g.visible){const q=rkOf(i);g.position.set(q[0],0,q[1]);g.rotation.y=q[2]?Math.PI/2:0}}laneG.forEach((g,i)=>{g.visible=i<G.lanesN});parkG.forEach((g,i)=>{g.visible=i<G.parkN});islandG.forEach((g,i)=>{g.visible=G.lanesN>i*2});
   for(const key in nozRef){const nz=nozRef[key],off=!!(P.noz&&P.noz.key===key);nz.visible=!off;if(nz.userData.hose)nz.userData.hose.visible=!off}
@@ -1737,11 +1787,14 @@ fileTex('plaster',[[wallM,5,1.2]],0.25);fileTex('wood',[[trimM,1,1],[deskM,1,1]]
 fileTex('concrete',[[M(0x9a9fa3,{roughness:0.95}),40,5],[M(0xc4c7c1,{roughness:0.95}),60,1]],0.5);fileTex('metal',[[shelfM,1,1]],0.3);
 const keys={};let joyX=0,joyY=0;
 // 当たり判定（小さめ）：壁・机・ゴミ箱・自販機・水道・屋根の柱
-const RECTS=[[-7.2,-4.6,-14.2,-13.8],[-2.8,7.2,-14.2,-13.8],[BIN[0]-0.4,BIN[0]+0.4,BIN[1]-0.4,BIN[1]+0.4],[-7.2,-0.7,-19.9,-19.5],[1.7,7.2,-19.9,-19.5],[-7.2,-6.8,-19.7,-4],[6.8,7.2,-19.7,-4],
-  [BATPOS[0]-0.2,BATPOS[0]+0.2,BATPOS[1]-0.2,BATPOS[1]+0.2],[-7.2,-1.6,-4.15,-3.85],[1.6,7.2,-4.15,-3.85],[4.55,6.65,-13.8,-12.85],[VPOS[0]-0.5,VPOS[0]+0.5,-3.85,-3.1],[FAUCET[0]+0.25,FAUCET[0]+0.5,FAUCET[1]-0.12,FAUCET[1]+0.12]];
+const RECTS=[[BIN[0]-0.4,BIN[0]+0.4,BIN[1]-0.4,BIN[1]+0.4],[BATPOS[0]-0.2,BATPOS[0]+0.2,BATPOS[1]-0.2,BATPOS[1]+0.2],[-7.2,-1.6,-4.15,-3.85],[4.55,6.65,-13.8,-12.85],[VPOS[0]-0.5,VPOS[0]+0.5,-3.85,-3.1],[FAUCET[0]+0.25,FAUCET[0]+0.5,FAUCET[1]-0.12,FAUCET[1]+0.12],[-7.2,-4.6,-14.2,-13.8]];
+// 壁（拡張で広さが変わる）
+let wallSig='',wallR=[];
+function walls(){const sig=(G.ex|0)+'|'+(G.eb|0);if(sig!==wallSig){wallSig=sig;const xr=XR(),zr=ZRv();wallR=[[-2.8,xr+0.2,-14.2,-13.8],[-7.2,-0.7,zr-0.2,zr+0.2],[1.7,xr+0.2,zr-0.2,zr+0.2],[-7.2,-6.8,zr,-4],[xr-0.2,xr+0.2,zr,-4],[1.6,xr+0.2,-4.15,-3.85]]}return wallR}
 IZ.forEach(z=>RECTS.push([-4.7,-4.3,z-0.2,z+0.2],[5.3,5.7,z-0.2,z+0.2]));
-if(HQ)RECTS.push([5.6,6.8,-3.85,-3.1],[7.6,8.4,-5.6,-4.8]);
+if(HQ)RECTS.push([5.6,6.8,-3.85,-3.1]);
 function blocked(x,z){const r=0.25;for(const b of RECTS)if(x>b[0]-r&&x<b[1]+r&&z>b[2]-r&&z<b[3]+r)return true;
+  for(const b of walls())if(x>b[0]-r&&x<b[1]+r&&z>b[2]-r&&z<b[3]+r)return true;
   for(let i=0;i<NSH;i++)if(G.slots[i]){const q=G.sh[i],b=rectOf('sh',q[0],q[1],q[2]);if(x>b[0]-r+0.03&&x<b[1]+r-0.03&&z>b[2]-r+0.03&&z<b[3]+r-0.03)return true}
   for(const q of G.regs){const b=rectOf('reg',q[0],q[1],q[2]);if(x>b[0]-r+0.1&&x<b[1]+r-0.1&&z>b[2]-r+0.05&&z<b[3]+r-0.05)return true}
   for(const q of G.rk){const b=rectOf('rk',q[0],q[1],q[2]);if(x>b[0]-r+0.03&&x<b[1]+r-0.03&&z>b[2]-r+0.03&&z<b[3]+r-0.03)return true}
@@ -1781,6 +1834,14 @@ function iconURL(id){if(iconCache[id])return iconCache[id];const c=document.crea
     jug=(b,l)=>{rr(18,18,36,44,5,b);rr(40,8,10,12,2,'#555');rr(24,30,24,18,2,l)},tray=(a,b2,c2)=>{rr(8,22,56,32,5,'#1c1f24');rr(12,26,24,24,3,'#f4f2ea');rr(38,26,22,11,2,a);rr(38,39,22,11,2,b2||c2)},
     tri=(a,b2)=>{g.fillStyle=a;g.beginPath();g.moveTo(36,10);g.lineTo(62,58);g.lineTo(10,58);g.closePath();g.fill();g.stroke();g.fillStyle=b2;g.fillRect(24,42,24,16)};
   if(id==='onigiri')tri('#f4f2ea','#1f2a22');else if(id==='sand')tri('#f7f1df','#f1d35a');
+  else if(id==='water')bottle('#bfe3f0','#2f6fd0');else if(id==='sports')bottle('#e8eef2','#3d7fd6');else if(id==='gum'){rr(10,26,52,20,3,'#5aa66a');rr(28,26,16,20,0,'#f2f2ee')}
+  else if(id==='salad'){g.fillStyle='#dfe8f0';g.beginPath();g.moveTo(10,28);g.lineTo(62,28);g.lineTo(52,60);g.lineTo(20,60);g.closePath();g.fill();g.fillStyle='#6fa04a';g.beginPath();g.ellipse(36,28,24,12,0,Math.PI,0);g.fill();g.fillStyle='#c8372d';g.beginPath();g.arc(44,22,5,0,7);g.fill()}
+  else if(id==='hotdog'){rr(8,30,56,20,9,'#d9a85a');rr(6,26,60,10,5,'#a8452a');g.strokeStyle='#f1d35a';g.lineWidth=3;g.beginPath();g.moveTo(12,31);g.lineTo(60,31);g.stroke()}
+  else if(id==='fresh'){rr(22,26,28,36,6,'#9a6fc0');rr(26,12,20,16,4,'#f2f2ee');rr(22,40,28,10,0,'#f7e9a0')}
+  else if(id==='yakisoba'){rr(10,22,52,34,4,'#f4f2ea');rr(10,32,52,14,0,'#c8372d');rr(8,18,56,6,2,'#f0e6c8')}
+  else if(id==='gummy'||id==='jerky'){rr(18,10,36,54,5,col);rr(24,28,24,18,2,id==='gummy'?'#f7e9a0':'#e8b830')}
+  else if(id==='choux'){g.fillStyle='#e8c77a';g.beginPath();g.ellipse(36,44,24,16,0,0,7);g.fill();g.fillStyle='#f4f2ea';g.beginPath();g.ellipse(36,30,14,8,0,0,7);g.fill()}
+  else if(id==='melon'){g.fillStyle='#9fc46a';g.beginPath();g.arc(36,42,22,0,7);g.fill();g.strokeStyle='#dfe8c0';g.lineWidth=1.5;for(let i=0;i<5;i++){g.beginPath();g.arc(36,42,22,i*1.2,i*1.2+0.9);g.stroke();g.beginPath();g.moveTo(18+i*9,24);g.lineTo(22+i*8,60);g.stroke()}g.strokeStyle='#6b5a3a';g.lineWidth=3;g.beginPath();g.moveTo(36,20);g.lineTo(36,10);g.moveTo(30,10);g.lineTo(42,10);g.stroke()}
   else if(id==='tea')bottle('#86a646','#2f6b34');else if(id==='cola')bottle('#2a1814','#c8372d');else if(id==='coffee')can('#4a3526','#c9a15a');else if(id==='energy')can('#2f6fd0','#c9ced3');
   else if(id==='pan'){g.fillStyle='#d9a85a';g.beginPath();g.ellipse(36,42,26,18,0,0,7);g.fill();g.strokeStyle='#b8853a';for(let i=-2;i<=2;i++){g.beginPath();g.moveTo(36+i*9,26);g.lineTo(36+i*9,58);g.stroke()}}
   else if(id==='ramen'){g.fillStyle='#f4f2ea';g.beginPath();g.moveTo(12,18);g.lineTo(60,18);g.lineTo(52,60);g.lineTo(20,60);g.closePath();g.fill();g.fillStyle='#c8372d';g.fillRect(15,30,42,12);rr(10,12,52,8,3,'#f0e6c8')}
@@ -1795,6 +1856,7 @@ function iconURL(id){if(iconCache[id])return iconCache[id];const c=document.crea
   else if(id==='rag'){rr(12,22,48,32,4,'#e9c948');g.strokeStyle='#c7a52a';g.lineWidth=2;g.strokeRect(16,26,40,24)}
   else if(id==='bucket'){g.fillStyle='#7f8a94';g.beginPath();g.moveTo(12,22);g.lineTo(60,22);g.lineTo(52,62);g.lineTo(20,62);g.closePath();g.fill();g.fillStyle='#9fd6f0';g.beginPath();g.ellipse(36,24,23,6,0,0,7);g.fill();g.strokeStyle='#c9ced3';g.lineWidth=3;g.beginPath();g.arc(36,22,24,Math.PI,0);g.stroke()}
   else if(id==='mop'){g.strokeStyle='#c9a57a';g.lineWidth=5;g.beginPath();g.moveTo(36,6);g.lineTo(36,48);g.stroke();rr(16,46,40,8,2,'#3d7fd6');g.fillStyle='#e9e6de';for(let i=0;i<7;i++)g.fillRect(17+i*5.6,54,4,12)}
+  else if(id==='_ds'){rr(8,8,56,58,3,'#6b4630');rr(34,8,4,58,0,'#3a2418');for(let i=0;i<4;i++){rr(11,14+i*13,22,8,1,'#c9a57a');rr(39,14+i*13,22,8,1,'#c9a57a')}}
   else if(id==='_rk'){rr(10,8,6,58,1,'#4f6b8a');rr(56,8,6,58,1,'#4f6b8a');[14,36,58].forEach(y=>rr(10,y,52,6,1,'#e07a2e'));rr(18,20,16,16,1,'#b98d5a');rr(38,42,16,16,1,'#b98d5a')}
   else if(id==='_rg'){rr(6,36,60,26,3,'#2a3344');rr(6,32,60,6,2,'#eeeae2');rr(16,10,24,18,2,'#1c1f24');rr(19,13,18,12,1,'#7fd3ea');rr(26,28,4,6,0,'#8d949b')}
   else rr(18,18,36,36,6,col);
@@ -1909,12 +1971,13 @@ function regSync(dt){const mi=myReg();
   if(posDirty){posDirty=false;RGS.forEach((R,i)=>{if(R&&i<G.regs.length)redraw(R.posTex)})}}
 
 /* ---------- management PC ---------- */
+const GLV=GOODS.slice().sort((a,b)=>a.lv-b.lv);
 let pcTab=0,pcSig='',CART=[];const FQ={r:0,h:0,d:0};
 function openPC(){closeAll();$('pcMsg').textContent='';pcSig='';$('pPC').hidden=false;pcRender()}
 function pcBtn(label,dis,fn){const b=el('button','b sm',label);b.type='button';b.disabled=!!dis;b.addEventListener('click',()=>{const r=fn();if(r){$('pcMsg').textContent=r.msg;if(r.ok)sfx.coin();else sfx.ng()}pcSig='';pcRender()});return b}
 function cartCost(){let c=0;const fc={};CART.forEach(id=>{if(isShBox(id)){c+=furnPrice(id,fc[id]|0);fc[id]=(fc[id]|0)+1}else c+=itemCost(id)});return c}
-const boxLabel=id=>id==='_sh'?'陳列棚':id==='_gs'?'ガソリン専用棚':id==='_rk'?'在庫棚':id==='_rg'?'レジ':isToolBox(id)?TOOLS[id.slice(2)].n:GMAP[id]?GMAP[id].n:'';
-function pcRender(){if($('pPC').hidden)return;const sig=pcTab+'|'+G.money+'|'+G.level+'|'+FK.map(f=>Math.floor(G.tanks[f])).join()+JSON.stringify(G.stock)+G.slots.join('')+JSON.stringify(G.price)+G.crew.map(c=>c.id+c.job+c.tier).join()+'|'+G.rk.length+'|'+G.regs.length+'|'+G.lanesN+'|'+G.parkN+'|'+G.pend.length+'|'+G.boxes.map(b=>b.gid+b.n).join()+'|'+CART.join()+'|'+G.tools.length+G.shop+G.day+G.vend.map(v=>v.g+v.n).join();if(sig===pcSig)return;pcSig=sig;
+const boxLabel=id=>id==='_ds'?'両面棚':id==='_sh'?'陳列棚':id==='_gs'?'ガソリン専用棚':id==='_rk'?'在庫棚':id==='_rg'?'レジ':isToolBox(id)?TOOLS[id.slice(2)].n:GMAP[id]?GMAP[id].n:'';
+function pcRender(){if($('pPC').hidden)return;const sig=pcTab+'|'+G.money+'|'+G.level+'|'+FK.map(f=>Math.floor(G.tanks[f])).join()+JSON.stringify(G.stock)+G.slots.join('')+JSON.stringify(G.price)+G.crew.map(c=>c.id+c.job+c.tier).join()+'|'+G.rk.length+'|'+G.regs.length+'|'+G.ex+G.eb+G.phase+'|'+G.lanesN+'|'+G.parkN+'|'+G.pend.length+'|'+G.boxes.map(b=>b.gid+b.n).join()+'|'+CART.join()+'|'+G.tools.length+G.shop+G.day+G.vend.map(v=>v.g+v.n).join();if(sig===pcSig)return;pcSig=sig;
   [0,1,2,3,4,5].forEach(i=>$('tab'+i).classList.toggle('cur',i===pcTab));const body=$('pcBody');body.textContent='';
   const row=()=>{const d=el('div','it');body.appendChild(d);return d};
   const cell=(d,cls,txt)=>{const e=el('div',cls,txt);d.appendChild(e);return e};
@@ -1934,10 +1997,11 @@ function pcRender(){if($('pPC').hidden)return;const sig=pcTab+'|'+G.money+'|'+G.
       const dt=row();cell(dt,'nm','合計 '+yen(cartCost()+SHIP)+'（商品 '+yen(cartCost())+' ＋ 送料 '+yen(SHIP)+'）');
       const go=pcBtn('発送する',G.money<cartCost()+SHIP,()=>{const r=doAct({a:'cart',items:CART.slice()});if(r.ok)CART=[];return r});go.classList.add('go');dt.appendChild(go)}
     const add=(id,sub,price,dis)=>{const d=row();name(d,id,boxLabel(id));cell(d,'sub',sub);cell(d,'num',yen(price));d.appendChild(pcBtn('カートに追加',dis||CART.length>=CART_MAX,()=>{CART.push(id);sfx.tap();return null}))};
-    GOODS.forEach(g=>{if(g.lv>G.level){const d=row();name(d,g.id,g.n);cell(d,'sub','Lv.'+g.lv+' で解放');return}
+    GLV.forEach(g=>{if(g.lv>G.level){if(g.lv===G.level+1){const d=row();name(d,g.id,g.n);cell(d,'sub','Lv.'+g.lv+' で解放')}return}
       const bx=G.boxes.reduce((s,b)=>s+(b.gid===g.id?b.n:0),0);add(g.id,'1箱'+g.cs+'個・棚'+(G.stock[g.id]||0)+(bx?'・箱'+bx:'')+(g.sz===3?'・専用棚':'')+(g.dr?'・自販機OK':''),g.cost*g.cs)});
     const cn=id=>CART.filter(x=>x===id).length,ns=cn('_sh'),ng=cn('_gs');
     add('_sh','5段の棚。箱で届くので、持って置きたい床に視点を合わせる（いま '+shCount(0)+'台）',5000+3000*(shCount(0)+ns));
+    add('_ds','背中合わせの2台ぶん。両面に商品を置ける（5段×2面）。売り場のまん中に置くのに向いている',furnPrice('_ds',cn('_ds')));
     add('_gs','携行缶・オイル・カー用品の棚（いま '+shCount(1)+'台）',12000+6000*(shCount(1)+ng));
     add('_rk','ダンボール4箱ぶんの在庫棚（棚の箱は横2枠）。売り場にも在庫スペースにも置ける（いま '+furnCount('_rk')+'台）',furnPrice('_rk',cn('_rk')));
     add('_rg','レジを増やすと、お客さんの列が分かれる（いま '+furnCount('_rg')+'台・8台まで）',furnPrice('_rg',cn('_rg')),furnCount('_rg')+cn('_rg')>=8);
@@ -1946,8 +2010,8 @@ function pcRender(){if($('pPC').hidden)return;const sig=pcTab+'|'+G.money+'|'+G.
     const pr=(k,ic,col,nm,cost,step)=>{const d=row();if(ic)name(d,ic,nm);else chip(d,col,nm);cell(d,'sub','相場'+yen(basePrice(k))+' 原価'+yen(cost));
       d.appendChild(pcBtn('−',false,()=>{doAct({a:'price',k:k,v:priceOf(k)-step});return null}));const v=cell(d,'num',yen(priceOf(k)));if(priceOf(k)>basePrice(k)*1.2+0.5)v.classList.add('neg');d.appendChild(pcBtn('＋',false,()=>{doAct({a:'price',k:k,v:priceOf(k)+step});return null}))};
     FK.forEach(f=>{if(FUELS[f].lv<=G.level)pr(f,'',FUELS[f].c,FUELS[f].n+' (1L)',FUELS[f].cost,2)});
-    GOODS.forEach(g=>{if(g.lv<=G.level)pr(g.id,g.id,'',g.n,g.cost,10)});
-    GOODS.forEach(g=>{if(g.lv<=G.level&&g.dr)pr('v_'+g.id,g.id,'','自販機：'+g.n,g.cost,10)})}
+    GLV.forEach(g=>{if(g.lv<=G.level)pr(g.id,g.id,'',g.n,g.cost,10)});
+    GLV.forEach(g=>{if(g.lv<=G.level&&g.dr)pr('v_'+g.id,g.id,'','自販機：'+g.n,g.cost,10)})}
   else if(pcTab===3){const d0=row();cell(d0,'sub',G.level<3?'アルバイトは Lv.3 から雇えます。':'いまのレベルで雇えるのは '+crewMax()+'人まで（最大'+MAXCREW+'人）。日給は固定で、1日の終わりに支払います。品出しは値札の付いた段にだけ並べます。');
     G.crew.forEach(c=>{const R=TIERS[c.tier],d=row();d.style.borderBottom='none';const f=el('img','face');f.alt='';f.src=faceURL(c.sd);d.appendChild(f);const n=cell(d,'nm','');n.appendChild(el('div','',crewName(c.sd)));n.appendChild(el('div','sub',R.n+'・速さ '+Math.round(R.s*100)+'%'));cell(d,'num','日給'+yen(R.w));d.appendChild(pcBtn('やめてもらう',false,()=>doAct({a:'fire',id:c.id})));
       const tb=el('div','tabs it');body.appendChild(tb);
@@ -1959,6 +2023,8 @@ function pcRender(){if($('pPC').hidden)return;const sig=pcTab+'|'+G.money+'|'+G.
       d.appendChild(pcBtn('雇う',G.crew.length>=crewMax(),()=>doAct({a:'hire',tier:t,sd:sd})))})}
   else if(pcTab===4){const dl=row(),ln=G.lanesN;cell(dl,'nm','給油レーン（増やすと来る車も増えます）');cell(dl,'num','所持 '+ln+' / 最大 '+MAXLANE);dl.appendChild(pcBtn(ln>=MAXLANE?'これ以上増やせません':G.level<LANE_LV[ln]?'Lv.'+LANE_LV[ln]+' で購入可':'レーンを増やす '+yen(LANE_PRICE[ln]),ln>=MAXLANE||G.level<LANE_LV[ln],()=>doAct({a:'laneBuy'})));
     const dp=row(),pn=G.parkN;cell(dp,'nm','駐車スペース（多いほどお客さんが増えます）');cell(dp,'num','所持 '+pn+' / 最大 6台');dp.appendChild(pcBtn(pn>=6?'これ以上増やせません':G.level<PARK_LV[pn]?'Lv.'+PARK_LV[pn]+' で購入可':'1台分ひろげる '+yen(PARK_PRICE[pn]),pn>=6||G.level<PARK_LV[pn],()=>doAct({a:'parkBuy'})));
+    [['s','売り場の拡張（右へ2m広がる）',EXP_S,G.ex],['b','在庫スペースの拡張（奥へ2.5m広がる）',EXP_B,G.eb]].forEach(q=>{const de=row(),E=q[2][q[3]];cell(de,'nm',q[1]);cell(de,'num','拡張 '+q[3]+' / '+q[2].length+'回');
+      de.appendChild(pcBtn(!E?'これ以上広げられません':G.level<E.lv?'Lv.'+E.lv+' で購入可':'広げる '+yen(E.p),!E||G.level<E.lv,()=>doAct({a:'expand',k:q[0]})))});
     const d=row();cell(d,'sub','陳列棚 '+shCount(0)+'台・ガソリン専用棚 '+shCount(1)+'台・在庫棚 '+G.rk.length+'台・レジ '+G.regs.length+'台。追加は「仕入れ（カート）」から注文すると、ダンボールで届きます。CLOSE 中に右上の「配置」で、動かす・梱包することもできます。')}
   else{const d=row();cell(d,'nm','お店の名前');const inp=document.createElement('input');inp.type='text';inp.maxLength=12;inp.value=G.shop;inp.autocomplete='off';d.appendChild(inp);d.appendChild(pcBtn('変更する',false,()=>doAct({a:'shopName',n:inp.value})));
     const d1=row();cell(d1,'sub','道具（バット・雑巾・バケツ・モップ）は「仕入れ（カート）」のいちばん下から注文できます。トラックがダンボールで届けます。');
@@ -2106,7 +2172,7 @@ function aimHit(max){ndc.set(0,0);ray.setFromCamera(ndc,camera);ray.far=max||3.6
 function aimFloor(){ndc.set(0,0);ray.setFromCamera(ndc,camera);const o=ray.ray.origin,d=ray.ray.direction;if(d.y>-0.05)return null;const t=Math.min(7,-o.y/d.y);return [o.x+d.x*t,o.z+d.z*t]}
 function placeEnd(){PLACE=null;ghost.visible=false;$('bPlace').classList.remove('cur')}
 function placeTick(){const mb=mode==='play'&&G?myBox():null;
-  if(!PLACE){SHP.on=!!(mb&&isShBox(mb.gid)&&!modalOpen());ghost.visible=SHP.on;if(!SHP.on)return;const ft=mb.gid==='_rg'?'reg':mb.gid==='_rk'?'rk':'sh';if(ft!=='reg')SHP.r%=2;const f=aimFloor();if(f){SHP.x=Math.round(f[0]*4)/4;SHP.z=Math.round(f[1]*4)/4}
+  if(!PLACE){SHP.on=!!(mb&&isShBox(mb.gid)&&!modalOpen());ghost.visible=SHP.on;if(!SHP.on)return;const ft=mb.gid==='_rg'?'reg':mb.gid==='_rk'?'rk':mb.gid==='_ds'?'ds':'sh';SHP.r%=(ft==='rk'||ft==='ds'?2:4);const f=aimFloor();if(f){SHP.x=Math.round(f[0]*4)/4;SHP.z=Math.round(f[1]*4)/4}
     SHP.ok=!!f&&act({a:'shelfPut',box:mb.id,who:CID,x:SHP.x,z:SHP.z,r:SHP.r},true).ok;const b=rectOf(ft,SHP.x,SHP.z,SHP.r);ghost.position.set(SHP.x,0.08,SHP.z);ghost.scale.set(b[1]-b[0],1,b[3]-b[2]);ghost.material.color.setHex(SHP.ok?0x4fa56a:0xd5483a);return}
   if(mode!=='play'||G.phase!=='pre'){placeEnd();return}const q=PLACE.sel;ghost.visible=!!q;if(!q)return;const f=aimFloor();if(f){q.x=Math.round(f[0]*4)/4;q.z=Math.round(f[1]*4)/4}
   q.ok=act({a:'move',t:q.t,i:q.i,x:q.x,z:q.z,r:q.r},true).ok;const b=rectOf(q.t,q.x,q.z,q.r);ghost.position.set(q.x,0.08,q.z);ghost.scale.set(b[1]-b[0],1,b[3]-b[2]);ghost.material.color.setHex(q.ok?0x4fa56a:0xd5483a)}
@@ -2126,7 +2192,7 @@ function ng(m){if(m)toast(m);sfx.ng()}
 function interact(u){if(mode!=='play'||modalOpen()||WIPE||!u)return;audioInit();const mb=myBox(),mt=myTool();
   if(PLACE){const q=PLACE.sel;
     if(u.act==='placePick'){const cur=u.t==='reg'?G.regs[u.i]:u.t==='rk'?G.rk[u.i]:G.sh[u.i];PLACE.sel={t:u.t,i:u.i|0,x:cur[0],z:cur[1],r:cur[2],ok:true};sfx.tap()}
-    else if(u.act==='placeRot'&&q){q.r=(q.r+1)%(q.t==='reg'?4:2);sfx.tap()}
+    else if(u.act==='placeRot'&&q){q.r=(q.r+1)%(q.t==='rk'?2:4);sfx.tap()}
     else if(u.act==='placeSet'&&q){if(!q.ok){ng('そこには置けません（壁や家具に近すぎるか、入口・通り道をふさぎます）');return}const r=doAct({a:'move',t:q.t,i:q.i,x:q.x,z:q.z,r:q.r});if(r.ok){sfx.ok();PLACE.sel=null}else ng(r.msg)}
     else if(u.act==='placePack'&&q){const r=doAct({a:'shelfPack',t:q.t,i:q.i,who:CID});if(r.ok){sfx.ok();placeEnd()}else ng(r.msg)}
     else if(u.act==='placeEnd'){if(q)PLACE.sel=null;else placeEnd()}
@@ -2162,7 +2228,7 @@ function interact(u){if(mode!=='play'||modalOpen()||WIPE||!u)return;audioInit();
   else if(u.act==='bin'){if(!mb)return;if(mb.n>0&&performance.now()-binArm>3500){binArm=performance.now();toast((isSp(mb.gid)?boxName(mb)+'です。':'中身が'+mb.n+'個入っています。')+'もう一度押すと捨てます');return}binArm=0;const r=doAct({a:'boxTrash',box:mb.id,who:CID});if(r.ok)sfx.tap()}
   else if(u.act==='drop'){if(!mb)return;const f=front(0.9);doAct({a:'boxDrop',box:mb.id,who:CID,x:f[0],z:f[1]});sfx.tap()}
   else if(u.act==='shPut'){if(!mb||!SHP.on)return;if(!SHP.ok){ng('そこには置けません（壁や家具に近すぎるか、入口・通り道をふさぎます）');return}const r=doAct({a:'shelfPut',box:mb.id,who:CID,x:SHP.x,z:SHP.z,r:SHP.r});if(r.ok)sfx.ok();else ng(r.msg)}
-  else if(u.act==='shRot'){SHP.r=(SHP.r+1)%(mb&&mb.gid==='_rg'?4:2);sfx.tap()}
+  else if(u.act==='shRot'){SHP.r=(SHP.r+1)%(mb&&(mb.gid==='_rk'||mb.gid==='_ds')?2:4);sfx.tap()}
   else if(u.act==='info'){if(u.m)toast(u.m)}}
 let CTX=null,CTX2=null,CTX3=null,AIM=null,ctxT=0;
 // アクションボタンは「視点を合わせている物」で決まる
@@ -2206,7 +2272,7 @@ function ctxUpdate(){$('ctl').hidden=!(EDIT||(mode==='play'&&!MAKER&&!WIPE));if(
       else if(au.act==='sign')best=G.phase==='pre'?{label:'OPEN にする',u:au}:G.phase==='report'?null:{label:'次の日へ進む',u:au}}
     // レジに立つ：お客さんが並ぶ側の反対（店員側）にいるときだけ
     if(!best&&!mb&&!mt&&!P.noz&&!regMine()){for(let i=0;i<G.regs.length&&!best;i++){const l=regLocal(i);if(l[1]<-0.35&&l[1]>-1.9&&Math.abs(l[0]-0.1)<1.9)best=G.regBy[i]?{label:'ほかの人がレジに立っています',u:{act:'info'}}:{label:'レジに立つ',u:{act:'reg',rg:i}}}}}
-  aimBox.visible=aim>=0;if(aim>=0){const si=Math.floor(aim/ROWS),s=G.sh[si],gas=si>=GAS0;aimBox.position.set(s[0],rowY(si,aim%ROWS)+(gas?0.28:0.16),s[1]);aimBox.rotation.y=s[2]?Math.PI/2:0;aimBox.scale.y=gas?1.6:1}
+  aimBox.visible=aim>=0;if(aim>=0){const si=Math.floor(aim/ROWS),s=G.sh[si],gas=si>=GAS0;aimBox.position.set(s[0],rowY(si,aim%ROWS)+(gas?0.28:0.16),s[1]);aimBox.rotation.y=(s[2]&3)*Math.PI/2;aimBox.scale.y=gas?1.6:1}
   CTX=best;const sh=(id,c)=>{const b=$(id);b.hidden=!c;if(c&&b.textContent!==c.label)b.textContent=c.label};sh('ctx',best);sh('ctx2',CTX2);sh('ctx3',CTX3);
   const h=$('held');let ht='';if(PLACE)ht='配置モード：棚・在庫棚・レジを動かせます';else if(mb)ht=boxName(mb)+(mb.n>0&&!isSp(mb.gid)?'（'+mb.n+'個）・'+(mb.open?'開いている':'閉じている'):'');
   else if(P.noz)ht=FUELS[P.noz.f].n+'のノズル';else if(mt)ht=TOOLS[mt.k].n+(mt.k==='bucket'?'（'+bucketState(mt)+'）':mt.k==='bat'?'':mt.wet>0.01?'（濡れている '+Math.round(mt.wet*100)+'%）':'（乾いている）');
