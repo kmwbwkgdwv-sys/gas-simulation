@@ -20,37 +20,43 @@ window.MANTAN_MODELS = function (T, mat) {
     return g;
   }
 
-  // 雑巾（黄色のマイクロファイバー、波打った布）
-  function rag(w, d) {
-    w = w || 0.42; d = d || 0.3;
-    const geo = new T.PlaneGeometry(w, d, 10, 8); geo.rotateX(-Math.PI / 2);
-    const p = geo.attributes.position;
-    for (let i = 0; i < p.count; i++) {
-      const x = p.getX(i), z = p.getZ(i);
-      p.setY(i, Math.sin(x * 22) * 0.012 + Math.cos(z * 26 + x * 9) * 0.01);
-    }
-    geo.computeVertexNormals();
+  // 雑巾（たたんだマイクロファイバークロス）
+  function clothMat() {
     const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d');
-    x.fillStyle = '#f2c62e'; x.fillRect(0, 0, 64, 64); x.fillStyle = '#e0a800';
-    for (let i = 0; i < 64; i += 8) x.fillRect(0, i, 64, 2);
-    x.fillStyle = '#fff'; x.fillRect(0, 0, 64, 3); x.fillRect(0, 61, 64, 3);
+    x.fillStyle = '#e9c948'; x.fillRect(0, 0, 64, 64);
+    for (let i = 0; i < 64; i += 4) { x.fillStyle = i % 8 ? 'rgba(255,255,255,0.10)' : 'rgba(120,90,0,0.10)'; x.fillRect(0, i, 64, 2); x.fillRect(i, 0, 2, 64); }
+    x.strokeStyle = '#c7a52a'; x.lineWidth = 3; x.strokeRect(2, 2, 60, 60);
     const t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding;
-    const m = mat(0xffffff, { map: t, keepMap: true, roughness: 1 }); m.side = T.DoubleSide;
-    return new T.Mesh(geo, m);
+    const m = mat(0xffffff, { map: t, keepMap: true, roughness: 1 }); m.side = T.DoubleSide; return m;
   }
-
-  // 水の入ったバケツ＋ふちに掛けた雑巾。userData.rag が「取れる雑巾」
+  function rag() {
+    const g = new T.Group(), m = clothMat();
+    add(g, new T.Mesh(new T.BoxGeometry(0.3, 0.022, 0.22), m), 0, 0, 0);
+    add(g, new T.Mesh(new T.BoxGeometry(0.29, 0.02, 0.21), m), 0.006, 0.021, 0.004).rotation.y = 0.05;
+    add(g, new T.Mesh(new T.BoxGeometry(0.28, 0.018, 0.2), m), -0.004, 0.04, -0.003).rotation.y = -0.04;
+    return g;
+  }
+  // バケツのふちに掛けた布（外側に垂れ、ふちをまたいで内側へ）
+  function drape(m, w, r, top) {
+    const geo = new T.PlaneGeometry(w, 1, 6, 12), p = geo.attributes.position;
+    const path = (t) => t < 0.45 ? [r + 0.03 + 0.02 * (1 - t / 0.45), top - 0.24 * (1 - t / 0.45)]
+      : t < 0.6 ? [r + 0.03 - 0.07 * ((t - 0.45) / 0.15), top + 0.02 * Math.sin((t - 0.45) / 0.15 * Math.PI)]
+        : [r - 0.04 - 0.01 * ((t - 0.6) / 0.4), top - 0.16 * ((t - 0.6) / 0.4)];
+    for (let i = 0; i < p.count; i++) { const t = p.getY(i) + 0.5, q = path(t); p.setXYZ(i, q[0], q[1], p.getX(i)); }
+    geo.computeVertexNormals(); return new T.Mesh(geo, m);
+  }
+  // 窓ふき用のバケツ（グレーの樹脂バケツ＋金属の持ち手＋水）。userData.rag が「取れる雑巾」
   function bucket() {
     const g = new T.Group();
-    const blue = mat(0x2f6fd0, { roughness: 0.35 }); blue.side = T.DoubleSide;
-    add(g, lathe([[0, 0.02], [0.27, 0.02], [0.28, 0.04], [0.36, 0.56], [0.375, 0.58], [0.375, 0.6], [0.35, 0.6], [0.265, 0.06], [0, 0.06]], 20, blue));
-    const water = add(g, new T.Mesh(new T.CircleGeometry(0.335, 20), mat(0x8fd0e8, { roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.8 })), 0, 0.46, 0);
-    water.rotation.x = -Math.PI / 2;
+    const shell = mat(0x7f8a94, { roughness: 0.55 }); shell.side = T.DoubleSide;
+    add(g, lathe([[0, 0.012], [0.15, 0.012], [0.155, 0.03], [0.19, 0.3], [0.2, 0.31], [0.2, 0.325], [0.184, 0.325], [0.146, 0.04], [0, 0.04]], 24, shell));
+    const water = add(g, new T.Mesh(new T.CircleGeometry(0.176, 24), mat(0x9fc9d6, { roughness: 0.08, transparent: true, opacity: 0.75 })), 0, 0.24, 0); water.rotation.x = -Math.PI / 2;
     const steel = mat(0xc9ced3, { roughness: 0.3, metalness: 0.8 });
-    const h = add(g, new T.Mesh(new T.TorusGeometry(0.38, 0.012, 6, 20, Math.PI), steel), 0, 0.58, 0);
-    h.rotation.z = 0; h.rotation.x = 0.5;
-    const r = rag(0.5, 0.36); r.position.set(0, 0.63, 0); r.rotation.y = 0.4; g.add(r);
-    const fold = rag(0.5, 0.2); fold.position.set(0.02, 0.5, 0.39); fold.rotation.set(Math.PI / 2 - 0.15, 0.4, 0); r.add(fold); fold.position.set(0, -0.11, 0.2); fold.rotation.set(1.35, 0, 0);
+    const h = add(g, new T.Mesh(new T.TorusGeometry(0.2, 0.007, 6, 24, Math.PI), steel), 0, 0.3, 0); h.rotation.set(-1.15, 0, 0);
+    [-0.2, 0.2].forEach((x) => add(g, new T.Mesh(new T.CylinderGeometry(0.014, 0.014, 0.02, 8), steel), x, 0.3, 0).rotation.z = Math.PI / 2);
+    const r = new T.Group(); r.add(drape(clothMat(), 0.2, 0.19, 0.335)); r.rotation.y = -0.6; g.add(r);
+    add(g, new T.Mesh(new T.BoxGeometry(0.05, 0.3, 0.012), mat(0x3a2c22, { roughness: 0.6 })), 0.26, 0.15, 0.2).rotation.set(0, 0.5, -0.12);
+    g.scale.setScalar(1.5);
     g.userData.rag = r;
     return g;
   }
@@ -65,7 +71,10 @@ window.MANTAN_MODELS = function (T, mat) {
     add(g, new T.Mesh(new T.TorusGeometry(0.13, 0.018, 8, 18), red), 0, 0.56, 0).rotation.x = Math.PI / 2;
     add(g, new T.Mesh(new T.BoxGeometry(0.04, 1.5, 0.04), dark), -0.2, 0.75, 0);
     add(g, new T.Mesh(new T.BoxGeometry(0.5, 0.34, 0.03), red), -0.2, 1.42, 0);
-    const b = bat(); b.position.set(0, 0.1, 0); b.rotation.z = -0.06; g.add(b);
+    // バットは3本立ててある（1本目が「取れるバット」）
+    const b = bat(); b.position.set(0.045, 0.1, 0.03); b.rotation.z = -0.07; g.add(b);
+    const b2 = bat(); b2.position.set(-0.05, 0.1, 0.04); b2.rotation.set(0.06, 0, 0.06); g.add(b2);
+    const b3 = bat(); b3.position.set(0, 0.1, -0.06); b3.rotation.set(-0.08, 0, 0); g.add(b3);
     g.userData.bat = b;
     return g;
   }
