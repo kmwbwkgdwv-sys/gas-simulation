@@ -82,10 +82,13 @@ input[type=text]{font-family:var(--disp);font-size:16px;border:2px solid var(--i
 .noz{flex:1;min-width:90px;padding:9px 6px;border:2px solid var(--ink);border-radius:9px;color:#fff;box-shadow:2px 3px 0 var(--ink)}
 .noz.sel{outline:4px solid var(--ink);outline-offset:2px}
 .noz[disabled]{filter:grayscale(1);opacity:.5;box-shadow:none}
-#fuBar{position:relative;height:34px;touch-action:none;cursor:pointer;background:var(--panel2);border:2px solid var(--ink);border-radius:9px;overflow:hidden}
+#fuBar{position:relative;height:38px;flex:none;touch-action:none;cursor:pointer;background:var(--panel2);border:2px solid var(--ink);border-radius:9px;overflow:hidden}
 #fuFill{position:absolute;top:0;bottom:0;left:40%;width:17%;background:#4fa56a}
 #fuMark{position:absolute;top:0;bottom:0;left:0;width:6px;background:var(--ink);border-radius:3px}
-#fuHold{font-size:19px;padding:16px;touch-action:none}
+#fuHold{font-size:17px;padding:9px 20px;touch-action:none;flex:1.4}
+#fuPanel{width:min(700px,100%);gap:6px;padding:9px 14px}
+#fuPanel .noz{padding:9px 4px;min-width:70px}
+#fuPanel .msg{min-height:1em;font-size:13px}
 #fuHold.on{background:var(--ink);color:#fff}
 .tbl{display:flex;flex-direction:column;gap:6px}
 .it{display:flex;gap:8px;align-items:center;border-bottom:1.5px dashed var(--panel2);padding-bottom:5px}
@@ -236,17 +239,16 @@ input[type=range]{flex:1;min-width:0;accent-color:var(--sign)}
   </div>
 
   <div class="ov" id="pFuel" hidden>
-    <div class="panel">
+    <div class="panel" id="fuPanel">
       <div class="hd"><h2 id="fuReq">給油</h2><button class="b sm" id="fuClose" type="button">ノズルを戻す</button></div>
+      <div id="fuBar"><div id="fuFill"></div><div id="fuMark"></div></div>
       <div class="row">
         <button class="noz c-r" id="fuT_r" type="button">レギュラー</button>
         <button class="noz c-h" id="fuT_h" type="button">ハイオク</button>
         <button class="noz c-d" id="fuT_d" type="button">軽油</button>
+        <button class="b go" id="fuHold" type="button">止める！</button>
       </div>
-      <div class="row"><div class="lcd grow" style="font-size:22px"><span id="fuL">0.0</span> L</div><div class="lcd" style="font-size:22px">¥<span id="fuY">0</span></div></div>
-      <div id="fuBar"><div id="fuFill"></div><div id="fuMark"></div></div>
-      <div class="sub" id="fuStep"></div>
-      <button class="b go" id="fuHold" type="button">止める！</button>
+      <div class="row"><div class="lcd" style="font-size:17px"><span id="fuL">0.0</span> L</div><div class="lcd" style="font-size:17px">¥<span id="fuY">0</span></div><div class="grow sub" id="fuStep"></div></div>
       <div class="sub" id="fuTank"></div>
       <div class="msg" id="fuMsg"></div>
     </div>
@@ -388,6 +390,9 @@ input[type=range]{flex:1;min-width:0;accent-color:var(--sign)}
 </div>
 <script src="firebase-config.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="assets/cs/data.js"></script>
+<script src="assets/cs/gl.js"></script>
+<script src="assets/cs/models.js"></script>
 <script src="assets/models.js"></script>
 <script>
 (function(){
@@ -1012,12 +1017,14 @@ const roomFloorM=mat(0xc79a63,{roughness:0.7});
   plate('在庫棚（1台に4箱）','#3a2c22',2.6,0.42,2,2.6,-18.2);plate('ゴミ箱','#3a2c22',1.2,0.36,BIN[0],2.0,-18.2);
   box(0.6,0.12,0.3,lampM,-6,3.3,-18.3,null,false);box(0.6,0.12,0.3,lampM,2,3.3,-18.3,null,false);
   if(HQ){const l=new T.PointLight(0xfff3df,0.45,16,2);l.position.set(0,3.4,-20);scene.add(l);ptLights.push([l,0.45])}
-  const bu={act:'bin'};clk(box(1.2,1.0,0.9,M(0x66806e,{roughness:0.7}),BIN[0],0.5,BIN[1]),bu);clk(box(1.28,0.1,0.98,M(0x4a6152,{roughness:0.6}),BIN[0],1.05,BIN[1]),bu);
+  const bu={act:'bin'};clk(cyl(0.44,0.38,1.0,20,M(0x5a5f64,{roughness:0.45,metalness:0.6}),BIN[0],0.5,BIN[1]),bu);clk(cyl(0.47,0.47,0.07,20,M(0x3a3e42,{roughness:0.45,metalness:0.6}),BIN[0],1.03,BIN[1]),bu);box(0.3,0.04,0.14,M(0x3a3e42,{roughness:0.5}),BIN[0],0.04,BIN[1]-0.44,null,false);
   plate('ゴミ箱','#3a2c22',0.9,0.3,BIN[0],0.6,BIN[1]-0.47)})();
 const rackG=[];
-RACKX.forEach((x,i)=>{const g=new T.Group(),u={act:'rack',rk:i},m=M(0x55606c,{roughness:0.5,metalness:0.5});g.position.set(x,0,RACKZ);scene.add(g);
-  [[-1.2,-0.36],[1.2,-0.36],[-1.2,0.36],[1.2,0.36]].forEach(p=>clk(box(0.07,1.95,0.07,m,p[0],0.975,p[1],g),u));
-  [0.17,1.07,1.92].forEach(y=>clk(box(2.47,0.06,0.8,m,0,y,0,g,false),u));rackG.push(g)});
+RACKX.forEach((x,i)=>{const g=new T.Group(),u={act:'rack',rk:i},post=M(0x4f6b8a,{roughness:0.5,metalness:0.4}),beam=M(0xe07a2e,{roughness:0.5,metalness:0.3}),oak=M(0xc9a57a,{roughness:0.75});g.position.set(x,0,RACKZ);scene.add(g);
+  // 在庫棚：青い支柱・オレンジの梁・木の棚板（2列×2段でダンボール4箱）
+  [[-1.2,-0.36],[1.2,-0.36],[-1.2,0.36],[1.2,0.36]].forEach(q=>clk(box(0.06,1.95,0.06,post,q[0],0.975,q[1],g),u));
+  [0.17,1.07,1.92].forEach(y=>{clk(box(2.36,0.04,0.74,oak,0,y,0,g,false),u);[0.36,-0.36].forEach(z=>clk(box(2.44,0.08,0.04,beam,0,y-0.04,z,g,false),u))});
+  clk(box(0.04,1.75,0.04,post,0,1.0,0.36,g,false),u);rackG.push(g)});
 // town & scenery around the station
 const facM=[];let stars=null;
 (function(){let sd=20240611;const rr=()=>{sd=(sd*1664525+1013904223)>>>0;return sd/4294967296};
@@ -1092,13 +1099,15 @@ const prodM=HQ?new T.MeshStandardMaterial({vertexColors:true,roughness:0.55}):ne
 const prodScale=gid=>GMAP[gid]&&GMAP[gid].sz<3?1.3:1;
 // shelves：ふつうの棚6台（5段）＋ガソリン専用棚2台（3段）。位置と向きは G.sh[i]
 const shelfG=[],goodsM={},rowHit=[];GOODS.forEach(g=>goodsM[g.id]=M(g.c,{roughness:0.6}));
-const shelfM=M(0xe6e4de,{roughness:0.5,metalness:0.25}),gasShM=M(0x7a2f28,{roughness:0.6,metalness:0.3}),hitM=new T.MeshBasicMaterial({visible:false}),gTag=new T.BoxGeometry(0.66,0.13,0.02);
+const shelfM=M(0xe6e4de,{roughness:0.5,metalness:0.25}),gasShM=M(0x7a2f28,{roughness:0.6,metalness:0.3}),oakM=M(0xc9a57a,{roughness:0.75}),walnutM=M(0x6b4630,{roughness:0.7}),backM=M(0x8a6142,{roughness:0.8}),postM=M(0x4f6b8a,{roughness:0.5,metalness:0.4}),beamM=M(0xe07a2e,{roughness:0.5,metalness:0.3}),hitM=new T.MeshBasicMaterial({visible:false}),gTag=new T.BoxGeometry(0.66,0.13,0.02);
 const rowY=(si,r)=>si>=6?0.17+r*0.62:0.145+r*0.37;
 SLOTS.forEach((s,si)=>{const gas=si>=6,nr=gas?3:ROWS,g=new T.Group(),su={act:'shelf',slot:si},fm=gas?gasShM:shelfM;g.position.set(s[0],0,s[1]);scene.add(g);
-  clk(box(0.08,1.95,0.8,fm,-1.2,0.98,0,g),su);clk(box(0.08,1.95,0.8,fm,1.2,0.98,0,g),su);box(2.4,0.05,0.8,fm,0,1.93,0,g,false);
+  // ふつうの棚は木の本棚型（オークの棚板・ウォルナットの側板・背板つき）、ガソリン専用棚はスチールラック型。どちらも正面はローカル +z
+  if(gas){[[-1.18,-0.37],[1.18,-0.37],[-1.18,0.37],[1.18,0.37]].forEach(q=>clk(box(0.06,1.95,0.06,postM,q[0],0.975,q[1],g),su));box(2.4,0.04,0.8,oakM,0,1.93,0,g,false)}
+  else{clk(box(0.05,1.95,0.8,walnutM,-1.2,0.975,0,g),su);clk(box(0.05,1.95,0.8,walnutM,1.2,0.975,0,g),su);box(2.44,0.04,0.82,oakM,0,1.95,0,g);clk(box(2.36,1.86,0.025,backM,0,0.99,-0.385,g,false),su);box(2.36,0.12,0.04,walnutM,0,0.06,0.36,g,false)}
   if(gas){const tt=textTex(512,64,(c,w,h)=>{c.fillStyle='#7a2f28';c.fillRect(0,0,w,h);c.fillStyle='#f0d9a8';c.font='500 34px '+FONT;c.textAlign='center';c.textBaseline='middle';c.fillText('ガソリン携行缶・カー用品',w/2,h/2+2)});plates.push(tt);
     const tm=mat(0xffffff,{map:tt,keepMap:true,roughness:0.6});[0.41,-0.41].forEach(z=>box(2.3,0.26,0.02,tm,0,1.78,z,g,false))}
-  const items=[],tags=[],ttex=[],tst=[],hh=gas?0.56:0.32;for(let r=0;r<nr;r++){const y=rowY(si,r);box(2.4,0.05,0.8,fm,0,y-0.025,0,g,false);
+  const items=[],tags=[],ttex=[],tst=[],hh=gas?0.56:0.32;for(let r=0;r<nr;r++){const y=rowY(si,r);box(2.36,0.04,0.78,oakM,0,y-0.02,0,g,false);if(gas)[0.37,-0.37].forEach(z=>box(2.42,0.07,0.04,beamM,0,y-0.055,z,g,false));else box(2.36,0.05,0.02,walnutM,0,y+0.004,0.385,g,false);
     const hm=new T.Mesh(new T.BoxGeometry(2.36,hh,0.84),hitM);hm.position.set(0,y+hh/2,0);g.add(hm);clk(hm,{act:'row',slot:si,row:r});rowHit.push(hm);
     const st={k:''},tx=textTex(256,52,(c,w,h)=>{const gd=GMAP[st.k];c.fillStyle='#fffbe6';c.fillRect(0,0,w,h);c.strokeStyle='#b8322a';c.lineWidth=4;c.strokeRect(2,2,w-4,h-4);if(!gd||!G)return;
       c.fillStyle='#2b2420';c.textBaseline='middle';c.textAlign='left';c.font='500 21px '+FONT;c.fillText(gd.n,10,h/2+1,128);c.fillStyle='#b8322a';c.textAlign='right';c.font='600 28px '+FONT;c.fillText('¥'+priceOf(st.k),w-10,h/2+2)});
@@ -1246,16 +1255,37 @@ function buildAvatar(av){const g=new T.Group(),body=new T.Group(),mats=[],mk=(c,
   else if(av.gl===2){part(hd,gLens,frameM,0.2,1.71,0.075,false);part(hd,gLens,frameM,0.2,1.71,-0.075,false);part(hd,gBridge,frameM,0.203,1.715,0,false)}
   g.scale.setScalar(av.h);
   return {g:g,legL:legL,legR:legR,armL:armL,armR:armR,mats:mats}}
-function makePerson(av,name){let m;
-  if(av)m=buildAvatar(av);else{const g=new T.Group();part(g,gPB,M(0x55606c,{roughness:0.9}),0,0.75,0);part(g,gPH,M(0xf0cfa8,{roughness:0.7}),0,1.52,0);m={g:g,legL:null,mats:[]}}
+// 人物：ケーキ屋さんゲームの人物モデル（assets/cs）を使う。読めなかったときは簡易モデル
+const CSX=(function(){try{const C=window.CS;if(!C||!C.models||!C.gl||!C.data)return null;
+  const lin=v=>{v=Math.max(0,Math.min(1,v));return v<=0.04045?v/12.92:Math.pow((v+0.055)/1.055,2.4)};
+  const eng={id:'mantan',upload(c){const g=new T.BufferGeometry(),n=c.p.length/3,col=new Float32Array(n*3);for(let i=0;i<n*3;i++)col[i]=lin(c.c[i]);
+      g.setAttribute('position',new T.Float32BufferAttribute(c.p,3));g.setAttribute('normal',new T.Float32BufferAttribute(c.n,3));g.setAttribute('color',new T.BufferAttribute(col,3));g.setAttribute('uv',new T.Float32BufferAttribute(c.uv,2));
+      g.setIndex(n>65535?new T.Uint32BufferAttribute(c.i,1):new T.Uint16BufferAttribute(c.i,1));return {geo:g}},
+    texFromCanvas(cv){const t=new T.CanvasTexture(cv);t.encoding=T.sRGBEncoding;return t}};
+  const cm=HQ?new T.MeshStandardMaterial({vertexColors:true,roughness:0.72}):new T.MeshLambertMaterial({vertexColors:true});if(HQ)allM.push(cm);
+  const texM=new Map(),colM=new Map();
+  function build(node,par,map){const o=new T.Group();par.add(o);map.push([node,o]);let m=cm;
+    if(node.tex&&node.tex.isTexture){m=texM.get(node.tex);if(!m){m=cm.clone();m.map=node.tex;texM.set(node.tex,m)}}
+    else if(node.color&&(node.color[0]!==1||node.color[1]!==1||node.color[2]!==1)){const k=node.color.join();m=colM.get(k);if(!m){m=cm.clone();m.color.setRGB(lin(node.color[0]),lin(node.color[1]),lin(node.color[2]));colM.set(k,m)}}
+    node.meshes.forEach(h=>{if(!h||!h.geo)return;const me=new T.Mesh(h.geo,m);if(HQ){me.castShadow=true;me.receiveShadow=true}o.add(me)});node.kids.forEach(k=>build(k,o,map));return o}
+  function sync(q){for(let i=0;i<q.map.length;i++){const n=q.map[i][0],o=q.map[i][1];o.position.set(n.p[0],n.p[1],n.p[2]);o.rotation.set(n.r[0],n.r[1],n.r[2],'YXZ');o.scale.set(n.s[0],n.s[1],n.s[2]);o.visible=n.vis!==false}}
+  const TYPES=['student','worker','parent','gourmet','tourist','party','elder'],HAIR=['crew','short','long','pony','bun','wavy'];
+  return {sync:sync,
+    make(skin){const ch=C.models.character(eng,skin),g=new T.Group(),inner=new T.Group(),map=[];inner.rotation.y=Math.PI/2;g.add(inner);build(ch.node,inner,map);const q={g:g,ch:ch,map:map};sync(q);return q},
+    cust(seed){seed=Math.abs(seed|0);return C.models.customerSkin(TYPES[seed%7],Math.floor(seed/7)%40)},
+    fromAv(av){return {body:av.w<0.93?'slim':av.w>1.12?'sturdy':'normal',height:av.h<0.95?'s':av.h>1.05?'l':'m',skin:'#'+av.skin,hair:HAIR[av.hs]||'short',hairColor:'#'+av.hair,eyes:'normal',eyeColor:'#2B1D14',brows:'normal',mouth:'smile',beard:av.beard?'beard':'none',
+      hat:av.hat===1||av.hat===3?'cap':av.hat===2?'beret':'none',hatColor:'#'+av.hatc,clothes:av.tt===1?'coat':'polo',clothesColor:'#'+av.top,pantsColor:'#'+av.bot,apron:av.tt===2?'bib':'none',apronColor:'#'+av.hatc,pattern:'plain',acc:av.gl?'glasses':'none',accColor:'#B8862E'}}}}catch(e){return null}})();
+function makePerson(av,name,skin){let m=null;
+  if(CSX&&(skin||av)){try{const q=CSX.make(skin||CSX.fromAv(av));m={g:q.g,legL:null,mats:[],cs:q}}catch(e){m=null}}
+  if(m){}else if(av)m=buildAvatar(av);else{const g=new T.Group();part(g,gPB,M(0x55606c,{roughness:0.9}),0,0.75,0);part(g,gPH,M(0xf0cfa8,{roughness:0.7}),0,1.52,0);m={g:g,legL:null,mats:[]}}
   m.rot=0;m.ph=0;m.sw=0;m.lab=null;m.txt=null;
-  if(name!==undefined){m.lab=makeLabel();m.lab.scale.set(1.5,0.63,1);m.lab.position.y=2.1;m.g.add(m.lab)}scene.add(m.g);return m}
+  if(name!==undefined){m.lab=makeLabel();m.lab.scale.set(1.5,0.63,1);m.lab.position.y=2.15;m.g.add(m.lab)}scene.add(m.g);return m}
 function dropPerson(m){scene.remove(m.g);[m.lab,m.mark].forEach(l=>{if(l){l.material.map.dispose();l.material.dispose()}});m.mats.forEach(x=>x.dispose())}
 function swing(m,a,dt){m.sw+=(a-m.sw)*Math.min(1,dt*12);if(m.legL){const q=m.sw,kn=(p,v)=>{const k=p.userData.k;if(k)k.rotation.z=v};m.legL.rotation.z=q;m.legR.rotation.z=-q;m.armL.rotation.z=-q*0.7;m.armR.rotation.z=q*0.7;
   kn(m.legL,-Math.max(0,-q)*1.3-0.04);kn(m.legR,-Math.max(0,q)*1.3-0.04);kn(m.armL,0.2+Math.max(0,-q)*0.6);kn(m.armR,0.2+Math.max(0,q)*0.6)}}
 function animPerson(m,tx,tz,k,dt,face){const p=m.g.position,ox=p.x,oz=p.z;p.x+=(tx-p.x)*k;p.z+=(tz-p.z)*k;const dx=p.x-ox,dz=p.z-oz,sp=Math.hypot(dx,dz)/Math.max(dt,0.001),mv=sp>0.3;
   if(face!==undefined)m.rot=lerpAng(m.rot,face,Math.min(1,dt*10));else if(mv)m.rot=lerpAng(m.rot,Math.atan2(dz,dx),Math.min(1,dt*8));
-  m.g.rotation.y=-m.rot;if(mv)m.ph+=Math.min(sp,6)*dt*3.4;swing(m,mv?Math.sin(m.ph)*0.42:0,dt)}
+  m.g.rotation.y=-m.rot;if(mv)m.ph+=Math.min(sp,6)*dt*3.4;if(m.cs){m.cs.ch.anim(dt,mv?'walk':'idle',Math.min(sp,5)/2.8);CSX.sync(m.cs)}else swing(m,mv?Math.sin(m.ph)*0.42:0,dt)}
 const PCOL=[0x3d7fd6,0xd9774a,0x5aa66a,0x9a6fc0,0xc2a23a];
 // passing traffic on the far lane (decoration only)
 const traffic=[];if(HQ)for(let i=0;i<3;i++){const m=makeCar({id:1000+i,col:(i*3+1)%8,rot:Math.PI},true);m.g.rotation.y=-Math.PI;traffic.push({m:m,x:-140+i*110,sp:10+i*2.5})}
@@ -1304,7 +1334,7 @@ function syncScene(dt){
     if(txt!==m.txt){m.txt=txt;m.lab.visible=!!txt;if(txt)drawLabel(m.lab,txt.split('|'),FUELS[c.fuel].c)}}
   carM.forEach((m,id)=>{if(!seen.has(id)){dropCar(m);carM.delete(id)}});
   seen.clear();
-  for(const u of G.custs){seen.add(u.id);let m=cuM.get(u.id);if(!m){m=makePerson(avRandom(u.id*31+G.day*977));cuM.set(u.id,m);m.g.position.set(u.x,0,u.z)}
+  for(const u of G.custs){seen.add(u.id);let m=cuM.get(u.id);if(!m){m=makePerson(avRandom(u.id*31+G.day*977),undefined,CSX?CSX.cust(u.id*31+G.day*977):null);cuM.set(u.id,m);m.g.position.set(u.x,0,u.z)}
     animPerson(m,u.x,u.z,k,dt);const fl=u.st==='flee',dn=u.st==='down';
     if(fl&&!m.mark){m.mark=makeLabel();m.mark.scale.set(1.2,0.5,1);m.mark.position.y=2.15;drawLabel(m.mark,['！'],'#d5281f');m.g.add(m.mark)}
     if(m.mark)m.mark.visible=fl;m.fall=(m.fall||0)+((dn?1:0)-(m.fall||0))*Math.min(1,dt*10);m.g.rotation.z=m.fall*1.45;m.g.position.y=m.fall*0.25}
@@ -1320,7 +1350,7 @@ function syncScene(dt){
   seen.clear();const fx=-Math.sin(P.yaw),fz=-Math.cos(P.yaw);
   const tk=G.truck;truckG.visible=tk.st>0;
   if(tk.st){const tp=truckG.position;if(Math.abs(tk.x-tp.x)+Math.abs(tk.z-tp.z)>15){tp.x=tk.x;tp.z=tk.z;truckRot=tk.rot}else{tp.x+=(tk.x-tp.x)*k;tp.z+=(tk.z-tp.z)*k;truckRot=lerpAng(truckRot,tk.rot,k)}truckG.rotation.y=-truckRot}
-  shelfG.forEach((sh,i)=>{sh.g.visible=!!G.slots[i];if(sh.g.visible){const q=shOf(i);sh.g.position.set(q[0],0,q[1]);sh.g.rotation.y=q[2]?-Math.PI/2:0}});
+  shelfG.forEach((sh,i)=>{sh.g.visible=!!G.slots[i];if(sh.g.visible){const q=shOf(i);sh.g.position.set(q[0],0,q[1]);sh.g.rotation.y=q[2]?Math.PI/2:0}});
   {const q=regOf();regG.position.set(q[0],0,q[1]);regG.rotation.y=-q[2]*Math.PI/2}regSync(dt);
   rackG.forEach((g,i)=>{g.visible=i<G.racks});laneG.forEach((g,i)=>{g.visible=i<G.lanesN});parkG.forEach((g,i)=>{g.visible=i<G.parkN});islandG[1].visible=G.lanesN>2;
   for(const b of G.boxes){seen.add(b.id);let m=bxM.get(b.id);if(!m){m=makeBox(b);bxM.set(b.id,m)}
@@ -1400,7 +1430,7 @@ function openFuel(c){if(!c){toast('給油を待っている車がいません');
 function fuelUI(){if(!FU)return;const c=fuCar();if(!c||c.st!=='pump'){closeAll();return}
   const v=Math.max(c.filled,FU.local);$('fuReq').textContent='ご注文：'+FUELS[c.fuel].n+' '+c.want+'L';
   $('fuL').textContent=v.toFixed(1);$('fuY').textContent=Math.round(Math.min(v,c.want)*priceOf(c.fuel)).toLocaleString('ja-JP');
-  $('fuStep').textContent='成功 '+FU.ok+' / '+FU_N+' 回　緑のところで止めよう（外すとガソリンを'+FU_SPILL+'Lむだにします）';
+  $('fuStep').textContent='成功 '+FU.ok+' / '+FU_N+'　緑で止める（外すと'+FU_SPILL+'Lむだ）';
   $('fuHold').textContent=FU.sel?'止める！':'先にノズル（油種）を選ぶ';
   $('fuTank').textContent='タンク残り　'+FK.filter(f=>FUELS[f].lv<=G.level).map(f=>FUELS[f].n+' '+Math.floor(G.tanks[f])+'L').join('　')}
 function fuelTick(dt){if(!FU)return;const c=fuCar();if(!c||c.st!=='pump'){closeAll();return}
@@ -1601,7 +1631,7 @@ MK_ROWS.forEach(r=>{const k=r[0],d=document.createElement('div');d.className='mk
   $('mkBody').appendChild(d)});
 function openMaker(done){closeAll();MAKER={av:avFix(SAVE.av),m:null,rot:0.5,dirty:true,done:done,drag:false};mkSync();$('pMaker').hidden=false}
 function makerTick(dt){if(!MAKER)return;if(MAKER.dirty){MAKER.dirty=false;if(MAKER.m)dropPerson(MAKER.m);MAKER.m=makePerson(MAKER.av);MAKER.m.g.position.set(MK_POS[0],0,MK_POS[1])}
-  if(!MAKER.drag)MAKER.rot+=dt*0.35;const m=MAKER.m;m.g.rotation.y=MAKER.rot;m.ph+=dt*5;swing(m,Math.sin(m.ph)*0.35,dt);
+  if(!MAKER.drag)MAKER.rot+=dt*0.35;const m=MAKER.m;m.g.rotation.y=MAKER.rot;m.ph+=dt*5;if(m.cs){m.cs.ch.anim(dt,'idle',1);CSX.sync(m.cs)}else swing(m,Math.sin(m.ph)*0.35,dt);
   camera.position.set(MK_POS[0]+3.3,1.3,MK_POS[1]);camera.lookAt(MK_POS[0],0.95,MK_POS[1]-0.85)}
 $('mkRandom').addEventListener('click',()=>{if(!MAKER)return;sfx.tap();const a=avRandom(Math.floor(Math.random()*1e6)),hex=()=>('00000'+Math.floor(Math.random()*16777216).toString(16)).slice(-6);a.top=hex();a.bot=hex();a.hatc=hex();if(Math.random()<0.3)a.hair=hex();a.tt=Math.floor(Math.random()*3);MAKER.av=avFix(a);MAKER.dirty=true;mkSync()});
 $('mkDone').addEventListener('click',()=>{if(!MAKER)return;SAVE.av=MAKER.av;if(MAKER.m)dropPerson(MAKER.m);const done=MAKER.done;MAKER=null;$('pMaker').hidden=true;lsSet();if(ROOM)ROOM.ch.presence({a:avEnc(SAVE.av)});sfx.ok();if(done)done();else if(mode==='title')$('pTitle').hidden=false});
@@ -1700,7 +1730,7 @@ function ctxUpdate(){$('ctl').hidden=!(EDIT||(mode==='play'&&!MAKER&&!WIPE));if(
       add(dist(8.7,-17),2.8,'管理PCを開く',{act:'pc'});
       if(!P.rag&&!P.bat)for(const b of G.boxes){if(!b.held&&!(b.loc==='t'&&G.truck.st!==2))add(dist(b.x,b.z),2.8,boxName(b)+'を持つ',{act:'box',id:b.id})}
       if(G.phase==='pre')add(dist(-2.6,-3.0),3.2,'OPEN にする',{act:'sign'});else if(G.phase==='open')add(dist(-2.6,-3.0),1.6,'CLOSE にする',{act:'sign'})}}
-  aimBox.visible=aim>=0;if(aim>=0){const si=Math.floor(aim/ROWS),s=G.sh[si],gas=si>=6;aimBox.position.set(s[0],rowY(si,aim%ROWS)+(gas?0.28:0.16),s[1]);aimBox.rotation.y=s[2]?-Math.PI/2:0;aimBox.scale.y=gas?1.6:1}
+  aimBox.visible=aim>=0;if(aim>=0){const si=Math.floor(aim/ROWS),s=G.sh[si],gas=si>=6;aimBox.position.set(s[0],rowY(si,aim%ROWS)+(gas?0.28:0.16),s[1]);aimBox.rotation.y=s[2]?Math.PI/2:0;aimBox.scale.y=gas?1.6:1}
   CTX=best;const b=$('ctx');b.hidden=!best;if(best)b.textContent=best.label;
   const b2=$('ctx2');b2.hidden=!CTX2;if(CTX2)b2.textContent=CTX2.label;
   const h=$('held');h.hidden=mode!=='play'||(!P.rag&&!P.bat&&!mb);h.textContent=mb?boxName(mb)+(mb.n>0?'（'+mb.n+'個）':'')+'を持っています・'+(mb.open?'開いている':'閉じている'):P.bat?'バットを持っています':'雑巾を持っています'}
