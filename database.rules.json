@@ -8,8 +8,22 @@
           ".read": "$code.matches(/^GS-[A-Z0-9]{4}-[A-Z0-9]{4}$/)",
           ".write": "$code.matches(/^GS-[A-Z0-9]{4}-[A-Z0-9]{4}$/)",
           ".validate": "newData.hasChildren(['j', 't'])",
-          "j": { ".validate": "newData.isString() && newData.val().length < 4000" },
+          "j": { ".validate": "newData.isString() && newData.val().length < 12000" },
           "t": { ".validate": "newData.val() == now" },
+          "$other": { ".validate": false }
+        }
+      },
+      "rank": {
+        ".read": true,
+        ".indexOn": ["s"],
+        "$id": {
+          ".write": "$id.matches(/^r[a-z0-9]{10}$/)",
+          ".validate": "newData.hasChildren(['n', 's', 'l', 't', 'ts']) && (!data.exists() || newData.child('s').val() >= data.child('s').val())",
+          "n": { ".validate": "newData.isString() && newData.val().length <= 10" },
+          "s": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+          "l": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 10" },
+          "t": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+          "ts": { ".validate": "newData.val() == now" },
           "$other": { ".validate": false }
         }
       },
@@ -24,13 +38,13 @@
           },
           "w": {
             ".write": "$room.matches(/^[A-Z0-9]{5}$/)",
-            ".validate": "newData.isString() && newData.val().length < 6000"
+            ".validate": "newData.isString() && newData.val().length < 16000"
           },
           "ev": {
             "$ev": {
               ".write": "$room.matches(/^[A-Z0-9]{5}$/)",
               ".validate": "newData.hasChildren(['d', 'f', 'ts'])",
-              "d": { ".validate": "newData.isString() && newData.val().length < 400" },
+              "d": { ".validate": "newData.isString() && newData.val().length < 600" },
               "f": { ".validate": "newData.isString() && newData.val().length < 16" },
               "ts": { ".validate": "newData.val() == now" },
               "$other": { ".validate": false }

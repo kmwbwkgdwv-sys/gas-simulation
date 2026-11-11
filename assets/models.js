@@ -61,21 +61,44 @@ window.MANTAN_MODELS = function (T, mat) {
     return g;
   }
 
-  // バット立て（床置きスタンド）。userData.bat が「取れるバット」
+  // 水バケツ（グレーの樹脂バケツ＋金属の持ち手）。userData.water が水面（ゲーム側で色と高さを変える）
+  function bucket2() {
+    const g = new T.Group();
+    const shell = mat(0x7f8a94, { roughness: 0.55 }); shell.side = T.DoubleSide;
+    add(g, lathe([[0, 0.012], [0.15, 0.012], [0.155, 0.03], [0.19, 0.3], [0.2, 0.31], [0.2, 0.325], [0.184, 0.325], [0.146, 0.04], [0, 0.04]], 24, shell));
+    const water = add(g, new T.Mesh(new T.CircleGeometry(0.176, 24), mat(0x9fd6f0, { roughness: 0.08, transparent: true, opacity: 0.82 })), 0, 0.24, 0); water.rotation.x = -Math.PI / 2;
+    const steel = mat(0xc9ced3, { roughness: 0.3, metalness: 0.8 });
+    const h = add(g, new T.Mesh(new T.TorusGeometry(0.2, 0.007, 6, 24, Math.PI), steel), 0, 0.3, 0); h.rotation.set(-1.15, 0, 0);
+    [-0.2, 0.2].forEach((x) => add(g, new T.Mesh(new T.CylinderGeometry(0.014, 0.014, 0.02, 8), steel), x, 0.3, 0).rotation.z = Math.PI / 2);
+    g.scale.setScalar(1.5);
+    g.userData.water = water;
+    return g;
+  }
+
+  // モップ（木の柄＋青い金具＋糸の束）。userData.yarn が糸のマテリアル（濡れると色が変わる）
+  function mop() {
+    const g = new T.Group();
+    const wood = mat(0xc9a57a, { roughness: 0.7 }), yarn = mat(0xe9e6de, { roughness: 1 });
+    add(g, new T.Mesh(new T.CylinderGeometry(0.015, 0.017, 1.3, 10), wood), 0, 0.78, 0);
+    add(g, new T.Mesh(new T.CylinderGeometry(0.02, 0.02, 0.06, 10), mat(0x22262b, { roughness: 0.8 })), 0, 1.44, 0);
+    add(g, new T.Mesh(new T.BoxGeometry(0.34, 0.045, 0.07), mat(0x3d7fd6, { roughness: 0.5 })), 0, 0.125, 0);
+    add(g, new T.Mesh(new T.CylinderGeometry(0.022, 0.03, 0.06, 8), mat(0x3d7fd6, { roughness: 0.5 })), 0, 0.16, 0);
+    for (let i = 0; i < 14; i++) {
+      const y = add(g, new T.Mesh(new T.CylinderGeometry(0.014, 0.02, 0.11 + (i % 3) * 0.012, 6), yarn), -0.156 + (i % 7) * 0.052, 0.055, i < 7 ? 0.02 : -0.02);
+      y.rotation.x = i < 7 ? 0.25 : -0.25;
+    }
+    g.userData.yarn = yarn;
+    return g;
+  }
+
+  // バット立て（床置きスタンド）。台座は1枚だけ。バット本体はゲーム側の「道具」として置かれる
   function batStand() {
     const g = new T.Group();
     const dark = mat(0x2a3038, { roughness: 0.5, metalness: 0.4 }), red = mat(0xd5281f, { roughness: 0.5 });
-    add(g, new T.Mesh(new T.CylinderGeometry(0.26, 0.3, 0.06, 18), dark), 0, 0.03, 0);
     const tube = mat(0x3a4048, { roughness: 0.45, metalness: 0.5 }); tube.side = T.DoubleSide;
-    add(g, new T.Mesh(new T.CylinderGeometry(0.13, 0.13, 0.5, 16, 1, true), tube), 0, 0.31, 0);
-    add(g, new T.Mesh(new T.TorusGeometry(0.13, 0.018, 8, 18), red), 0, 0.56, 0).rotation.x = Math.PI / 2;
-    add(g, new T.Mesh(new T.BoxGeometry(0.04, 1.5, 0.04), dark), -0.2, 0.75, 0);
-    add(g, new T.Mesh(new T.BoxGeometry(0.5, 0.34, 0.03), red), -0.2, 1.42, 0);
-    // バットは3本立ててある（1本目が「取れるバット」）
-    const b = bat(); b.position.set(0.045, 0.1, 0.03); b.rotation.z = -0.07; g.add(b);
-    const b2 = bat(); b2.position.set(-0.05, 0.1, 0.04); b2.rotation.set(0.06, 0, 0.06); g.add(b2);
-    const b3 = bat(); b3.position.set(0, 0.1, -0.06); b3.rotation.set(-0.08, 0, 0); g.add(b3);
-    g.userData.bat = b;
+    add(g, new T.Mesh(new T.CylinderGeometry(0.13, 0.13, 0.52, 16, 1, true), tube), 0, 0.28, 0);
+    add(g, new T.Mesh(new T.CircleGeometry(0.13, 16), dark), 0, 0.022, 0).rotation.x = -Math.PI / 2;
+    add(g, new T.Mesh(new T.TorusGeometry(0.13, 0.018, 8, 18), red), 0, 0.54, 0).rotation.x = Math.PI / 2;
     return g;
   }
 
@@ -108,5 +131,5 @@ window.MANTAN_MODELS = function (T, mat) {
     return g;
   }
 
-  return { bat: bat, rag: rag, bucket: bucket, batStand: batStand, cone: cone, pallet: pallet, loot: loot };
+  return { bat: bat, rag: rag, bucket: bucket, bucket2: bucket2, mop: mop, batStand: batStand, cone: cone, pallet: pallet, loot: loot };
 };
