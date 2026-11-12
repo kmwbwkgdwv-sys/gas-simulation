@@ -554,6 +554,16 @@ const SAY=['まだかなあ…','遅いなあ…','早くしてくれ〜','も�
 const rnd=()=>Math.random();
 const r1=v=>Math.round(v*10)/10;
 function lerpAng(a,b,k){let d=b-a;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;return a+d*k}
+// 道具を置く場所：ほかの道具や水道と重なると、中に埋もれて見えなくなったり持てなくなったりするので、空いている所へずらす
+function toolSpot(list,t,x,z,sc){if(t.k==='bat'&&Math.hypot(x-BATPOS[0],z-BATPOS[1])<0.35)return [x,z];
+  for(let n=0;n<24;n++){let cx=0,cz=0,r=0;
+    for(const q of list){if(q===t||q.held)continue;const need=((t.k==='bucket'||q.k==='bucket')?0.72:0.5)*sc;if(Math.hypot(q.x-x,q.z-z)<need){cx=q.x;cz=q.z;r=need;break}}
+    if(!r&&Math.hypot(x-FAUCET[0],z-FAUCET[1])<0.95){cx=FAUCET[0];cz=FAUCET[1];r=0.95}
+    if(!r)break;
+    let dx=x-cx,dz=z-cz,d=Math.hypot(dx,dz);if(d<0.01){dx=Math.cos(n*2.4);dz=Math.sin(n*2.4);d=1}
+    x=cx+dx/d*(r+0.03);z=cz+dz/d*(r+0.03);
+    if(x>-7.3&&x<-6.7&&z>-14&&z<-4){x=-7.32;if(Math.abs(z-FAUCET[1])<0.95)z=FAUCET[1]+(dz<0?-1:1)*0.98}}
+  return [Math.max(-40,Math.min(40,x)),Math.max(-30.5,Math.min(16.5,z))]}
 function defTools(){return [['bat',BATPOS[0],BATPOS[1],0,0],['rag',2.6,IZ[0],0,0],['mop',-6.4,-4.7,0,0],['bucket',-5.8,-4.7,-1,0]]}
 function defaultSave(){const sl=new Array(NSH).fill(0);sl[0]=1;sl[GAS0]=1;return {v:5,name:'',code:'',shop:'まんたんマート',money:30000,xp:0,level:1,tanks:{r:300,h:0,d:0},stock:{},rows:[],slots:sl,served:0,sound:1,day:1,price:{},crew:[],boxes:[],racks:1,pend:[],lanes:1,park:2,tools:defTools(),vend:[],sales:0,pt:0,rid:''}}
 function newDay(){return {fuel:0,goods:0,vend:0,wipe:0,buy:0,ship:0,visit:0,served:0,unhappy:0,left:0,stolen:0,stolenN:0}}
@@ -589,6 +599,7 @@ function newWorld(s){const ver=s.v|0,old=ver<4,osl=Array.isArray(s.slots)?s.slot
   (s.pend||[]).forEach(id=>{if((GMAP[id]||isSp(id))&&w.boxes.length+w.pend.length<MAXBOX)w.pend.push(id)});
   if(w.boxes.some(b=>b.loc==='t')){w.truck.st=2;w.truck.x=TRUCK_STOP[0];w.truck.z=TRUCK_STOP[1]-2.5*w.eb;truckPlace(w)}
   (Array.isArray(s.tools)&&s.tools.length?s.tools:defTools()).slice(0,40).forEach(t=>{if(t&&TOOLS[t[0]])w.tools.push({id:w.nid++,k:t[0],x:+t[1]||0,z:+t[2]||0,held:0,w:t[0]==='bucket'?Math.max(-1,Math.min(3,t[3]|0)):0,wet:Math.max(0,Math.min(1,+t[4]||0)),ft:0})});
+  w.tools.forEach(t=>{if(t.k!=='bucket'){const q=toolSpot(w.tools,t,t.x,t.z,0.62);t.x=q[0];t.z=q[1]}});
   for(let i=0;i<VN;i++){const v=Array.isArray(s.vend)&&s.vend[i],g=v&&GOODS[v[0]];w.vend.push(g&&g.dr&&v[1]>0?{g:g.id,n:Math.min(VCAP,v[1]|0)}:{g:'',n:0})}
   // 置けない場所にある棚（以前のセーブなど）は空いている場所へ移す
   const pg=G;G=w;for(let i=0;i<NSH;i++)if(w.slots[i]){const q=w.sh[i];w.slots[i]=0;const ok=placeOk('sh',i,q[0],q[1],q[2])?q:freeSpot(i);if(ok){w.sh[i]=[ok[0],ok[1],ok[2]];w.slots[i]=1}else{for(let r=0;r<ROWS;r++)w.rows[i*ROWS+r]={g:'',n:0,tag:''};if(w.boxes.length<MAXBOX)w.boxes.push({id:w.nid++,gid:shBoxOf(i),n:1,x:-8.5+(w.boxes.length%6),z:-2.9,held:0,open:0,loc:0,sl:0})}}
@@ -915,9 +926,9 @@ function act(a,dry){
   if(a.a==='toolUnbox'){const b=G.boxes.find(b=>b.id===a.box);if(!b||b.held!==a.who||!isToolBox(b.gid))return no('道具の箱を持っていません');if(G.tools.length>=40)return no('道具が多すぎます');if(dry)return ok();
     const k=b.gid.slice(2);G.boxes.splice(G.boxes.indexOf(b),1);G.tools.push({id:G.nid++,k:k,x:+a.x||0,z:+a.z||0,held:who,w:k==='bucket'?-1:0,wet:0,ft:0});return ok()}
   if(a.a==='toolPick'){const t=tool(a.id);if(!t||!who)return no('');if(t.held)return no('ほかの人が持っています');if(t.ft>0)return no('水を入れているところです');if(G.boxes.some(x=>x.held===who)||G.tools.some(x=>x.held===who))return no('手がふさがっています');if(dry)return ok();t.held=who;return ok()}
-  if(a.a==='toolDrop'){const t=tool(a.id);if(!mine(t))return no('');if(dry)return ok();t.held=0;t.x=Math.max(-40,Math.min(40,+a.x||0));t.z=Math.max(-30.5,Math.min(16.5,+a.z||0));return ok()}
+  if(a.a==='toolDrop'){const t=tool(a.id);if(!mine(t))return no('');if(dry)return ok();t.held=0;const sp=toolSpot(G.tools,t,Math.max(-40,Math.min(40,+a.x||0)),Math.max(-30.5,Math.min(16.5,+a.z||0)),1);t.x=sp[0];t.z=sp[1];return ok()}
   // 水道にバケツを置く：古い水は捨てて、5秒で水がたまる
-  if(a.a==='toolFill'){const t=tool(a.id);if(!mine(t)||t.k!=='bucket')return no('バケツを持っていません');if(G.tools.some(x=>x.ft>0))return no('水道はいま使っています');if(dry)return ok();t.held=0;t.x=FAUCET[0];t.z=FAUCET[1]+0.02;t.w=-1;t.ft=5;return ok()}
+  if(a.a==='toolFill'){const t=tool(a.id);if(!mine(t)||t.k!=='bucket')return no('バケツを持っていません');if(G.tools.some(x=>x.ft>0))return no('水道はいま使っています');if(G.tools.some(x=>x!==t&&x.k==='bucket'&&!x.held&&Math.hypot(x.x-FAUCET[0],x.z-FAUCET[1])<0.9))return no('水道にバケツが置いてあります。先にそのバケツをどかしましょう');if(dry)return ok();t.held=0;t.x=FAUCET[0];t.z=FAUCET[1]+0.02;t.w=-1;t.ft=5;return ok()}
   // 床に置いた水バケツで雑巾／モップを濡らす（バケツの水は3回で使えなくなる）
   if(a.a==='toolWet'){const t=tool(a.id),b=tool(a.b);if(!mine(t)||(t.k!=='rag'&&t.k!=='mop'))return no('雑巾かモップを持ってからにしましょう');if(!b||b.k!=='bucket'||b.held||b.ft>0)return no('床に置いた水バケツが必要です');
     if(b.w<0)return no('バケツが空です。店の横の水道で水を入れましょう');if(b.w===0)return no('水が汚れて使えません。店の横の水道で入れ替えましょう');if(t.wet>0.95)return no('もう十分に濡れています');if(dry)return ok();t.wet=1;b.w--;return ok()}
@@ -2227,6 +2238,10 @@ function rowAct(ri,mb,tag){if(ri<0)return null;const r=G.rows[ri];
   if(tag&&r.tag)return {label:GMAP[r.tag].n+'の値段を変える',u:{act:'priceUI',k:r.tag}};
   if(r.n>0&&!r.tag)return {label:'値札を貼る',u:{act:'tagSet',row:ri}};if(r.n===0&&r.tag)return {label:'値札を取る',u:{act:'tagOff',row:ri}};if(r.tag)return {label:GMAP[r.tag].n+'の値段を変える',u:{act:'priceUI',k:r.tag}};return null}
 const front=d=>[P.x-Math.sin(P.yaw)*d,P.z-Math.cos(P.yaw)*d];
+// 物を置く場所：目の前が壁・車・給油機・棚・レジなどのときは、その中に入って消えたように見えるので、手前（最後は足もと）に置く
+function dropSpot(d){const isl=(x,z)=>{for(let k=0;k<IZ.length;k++)if(x>0.8&&x<3.0&&Math.abs(z-IZ[k])<0.45)return true;return false};
+  for(const k of [d,d*0.7,d*0.45]){const f=front(k),h=front(k*0.5);if(isl(f[0],f[1])||(!blocked(f[0],f[1])&&!blocked(h[0],h[1])))return f}
+  return [P.x,P.z]}
 function ng(m){if(m)toast(m);sfx.ng()}
 function interact(u){if(mode!=='play'||modalOpen()||WIPE||!u)return;audioInit();const mb=myBox(),mt=myTool();
   if(PLACE){const q=PLACE.sel;
@@ -2248,7 +2263,7 @@ function interact(u){if(mode!=='play'||modalOpen()||WIPE||!u)return;audioInit();
     let best=null,bd=2.7;for(const c of G.custs){if(c.st==='down')continue;const dx=c.x-P.x,dz=c.z-P.z,d=Math.hypot(dx,dz);if(d>=bd)continue;if(d>0.6&&(-Math.sin(P.yaw)*dx-Math.cos(P.yaw)*dz)/d<0.45)continue;bd=d;best=c}
     if(best){const r=doAct({a:'hit',cu:best.id});if(r.ok){if(best.st==='flee'||r.msg==='rob')sfx.ok();else{sfx.ng();toast('お客さんを殴ってしまった！')}}}}
   else if(u.act==='toolPick'){if(mb||mt||P.noz){ng('手がふさがっています');return}const r=doAct({a:'toolPick',id:u.id,who:CID});if(r.ok)sfx.tap();else ng(r.msg)}
-  else if(u.act==='toolDrop'){if(!mt)return;const f=front(0.8);doAct({a:'toolDrop',id:mt.id,who:CID,x:f[0],z:f[1]});sfx.tap()}
+  else if(u.act==='toolDrop'){if(!mt)return;const f=dropSpot(0.8);doAct({a:'toolDrop',id:mt.id,who:CID,x:f[0],z:f[1]});sfx.tap()}
   else if(u.act==='toolWet'){if(!mt)return;const r=doAct({a:'toolWet',id:mt.id,b:u.b,who:CID});if(r.ok)sfx.coin();else ng(r.msg)}
   else if(u.act==='toolFill'){if(!mt)return;if(dist(FAUCET[0],FAUCET[1])>3){ng('もっと近づいてください');return}const r=doAct({a:'toolFill',id:mt.id,who:CID});if(r.ok)sfx.tap();else ng(r.msg)}
   else if(u.act==='loot'){const d=G.drops.find(d=>d.id===u.id);if(!d)return;const r=doAct({a:'loot',id:d.id});if(r.ok)sfx.coin();else ng(r.msg)}
@@ -2265,7 +2280,7 @@ function interact(u){if(mode!=='play'||modalOpen()||WIPE||!u)return;audioInit();
   else if(u.act==='tagSet'||u.act==='tagOff'){const r=doAct({a:u.act,row:u.row});if(r.ok)sfx.tap();else ng(r.msg)}
   else if(u.act==='rack'){if(!mb||u.rk>=G.rk.length)return;const r=doAct({a:'boxStore',box:mb.id,who:CID,rk:u.rk});if(r.ok)sfx.tap();else ng(r.msg)}
   else if(u.act==='bin'){if(!mb)return;if(mb.n>0&&performance.now()-binArm>3500){binArm=performance.now();toast((isSp(mb.gid)?boxName(mb)+'です。':'中身が'+mb.n+'個入っています。')+'もう一度押すと捨てます');return}binArm=0;const r=doAct({a:'boxTrash',box:mb.id,who:CID});if(r.ok)sfx.tap()}
-  else if(u.act==='drop'){if(!mb)return;const f=front(0.9);doAct({a:'boxDrop',box:mb.id,who:CID,x:f[0],z:f[1]});sfx.tap()}
+  else if(u.act==='drop'){if(!mb)return;const f=dropSpot(0.9);doAct({a:'boxDrop',box:mb.id,who:CID,x:f[0],z:f[1]});sfx.tap()}
   else if(u.act==='shPut'){if(!mb||!SHP.on)return;if(!SHP.ok){ng('そこには置けません（壁や家具に近すぎるか、入口・通り道をふさぎます）');return}const r=doAct({a:'shelfPut',box:mb.id,who:CID,x:SHP.x,z:SHP.z,r:SHP.r});if(r.ok)sfx.ok();else ng(r.msg)}
   else if(u.act==='shRot'){SHP.r=(SHP.r+1)%(mb&&(mb.gid==='_rk'||mb.gid==='_ds')?2:4);sfx.tap()}
   else if(u.act==='info'){if(u.m)toast(u.m)}}
@@ -2277,7 +2292,7 @@ function ctxUpdate(){$('ctl').hidden=!(EDIT||(mode==='play'&&!MAKER&&!WIPE));if(
     if(q){best={label:q.ok?'ここに置く':'ここには置けません',u:{act:'placeSet'}};CTX2={label:'向きを変える',u:{act:'placeRot'}};CTX3={label:'ダンボールに梱包する',u:{act:'placePack'}}}
     else{const au=aimHit(7);if(au&&(au.act==='row'||au.act==='shelf')&&G.slots[au.slot])best={label:(au.slot>=GAS0?'ガソリン専用棚':'棚')+'を動かす',u:{act:'placePick',t:'sh',i:au.slot}};else if(au&&(au.act==='reg'||REG_ACTS.indexOf(au.act)>=0))best={label:'レジを動かす',u:{act:'placePick',t:'reg',i:au.rg|0}};else if(au&&au.act==='rack'&&au.rk<G.rk.length)best={label:'在庫棚を動かす',u:{act:'placePick',t:'rk',i:au.rk}};CTX2={label:'配置を終える',u:{act:'placeEnd'}}}}
   else if(playing){const au=aimHit(),ri=au&&au.act==='row'&&G.slots[au.slot]?au.slot*ROWS+au.row:-1;AIM=au;
-    const tl=au&&au.act==='tool'?G.tools.find(t=>t.id===au.id):null,car=au&&(au.act==='car'||au.act==='port')?G.cars.find(c=>c.id===au.id):null;
+    const tl=au&&au.act==='tool'?G.tools.find(t=>t.id===au.id):au&&au.act==='faucet'&&!(mt&&mt.k==='bucket')?(G.tools.find(t=>t.k==='bucket'&&!t.held&&Math.hypot(t.x-FAUCET[0],t.z-FAUCET[1])<0.9)||null):null,car=au&&(au.act==='car'||au.act==='port')?G.cars.find(c=>c.id===au.id):null;
     if(regMine()){const rl=au&&REG_ACTS.indexOf(au.act)>=0?regLabel(au):null;if(rl)best={label:rl,u:au};else if(REG&&REG.took&&$('pReg').hidden)best={label:'お会計の画面を開く',u:{act:'regPanel'}};CTX2={label:'レジを離れる',u:{act:'regOff'}}}
     else if(mb&&isShBox(mb.gid)){CTX2={label:'向きを変える',u:{act:'shRot'}};CTX3={label:'箱を置く',u:{act:'drop'}};
       if(au&&au.act==='rack')best={label:'在庫棚に置く（横2枠）',u:au};else if(au&&au.act==='bin')best={label:'ゴミ箱に捨てる',u:au};else best={label:SHP.ok?'ここに'+boxLabel(mb.gid)+'を置く':'ここには置けません',u:{act:'shPut'}}}
